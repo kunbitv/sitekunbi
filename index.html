@@ -252,34 +252,33 @@
   </section>
 
   <!-- 📰 Actualités -->
-  <section id="actualites" class="section">
-    <div class="container">
-      <h2>Actualités</h2>
-      <div class="news-grid">
-        <div class="news-card">
-          <img src="actu1.jpg" alt="Actualité 1">
-          <div class="news-card-content">
-            <h3>Kunbi TV fête la culture soninké</h3>
-            <p>Retour sur un événement exceptionnel qui a réuni artistes, intellectuels et passionnés autour de la culture soninké.</p>
-          </div>
-        </div>
-        <div class="news-card">
-          <img src="actu2.jpg" alt="Actualité 2">
-          <div class="news-card-content">
-            <h3>Lancement de la nouvelle grille 2025</h3>
-            <p>Découvrez nos nouvelles émissions, nos nouveaux visages et nos ambitions pour l'année à venir.</p>
-          </div>
-        </div>
-        <div class="news-card">
-          <img src="actu3.jpg" alt="Actualité 3">
-          <div class="news-card-content">
-            <h3>Kunbi Débat Express : succès populaire</h3>
-            <p>Une émission qui donne la parole aux citoyens sur les questions sociales et culturelles actuelles.</p>
-          </div>
+ 
+<div class="news-grid" id="newsGrid"></div>
+
+<script>
+  const supabaseUrl = 'https://pjdozdmwevdezfzgltlc.supabase.co';
+  const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBqZG96ZG13ZXZkZXpmemdsdGxjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjAwNzYyNDcsImV4cCI6MjA3NTY1MjI0N30.inXUrg_fWIRLagOnSFkRc8HxbrRD5OitBymNntrXfWQ';
+  const supabase = supabase.createClient(supabaseUrl, supabaseKey);
+
+  async function loadPublicNews(){
+    const { data } = await supabase.from('actualites').select('*').order('created_at',{ascending:false});
+    const grid = document.getElementById('newsGrid');
+    if(!data.length){grid.innerHTML='<p>Aucune actualité</p>';return;}
+    grid.innerHTML = data.map(item=>`
+      <div class="news-card">
+        ${item.media.endsWith('.mp4')?`<video src="${item.media}" controls></video>`:`<img src="${item.media}">`}
+        <div class="news-card-content">
+          <h3>${item.titre}</h3>
+          <p>${item.resume}</p>
+          ${item.lien?`<a href="${item.lien}" target="_blank">Lire plus</a>`:''}
         </div>
       </div>
-    </div>
-  </section>
+    `).join('');
+  }
+
+  loadPublicNews();
+</script>
+
 
   <!-- 🎬 Nos Programmes -->
   <section id="programmes" class="section">
@@ -380,6 +379,7 @@
   <!-- 🎥 HLS.js -->
   <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
   <script>
+    
     // Animation galaxie
     function createGalaxy() {
       const galaxy = document.getElementById('galaxy');
@@ -417,6 +417,9 @@
     });
 
     createGalaxy();
+    const { data } = await supabase.from('actualites').select('*').order('created_at',{ascending:false});
+
   </script>
 </body>
 </html>
+
