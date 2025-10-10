@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>CMS Kunbi TV - Supabase</title>
+<title>CMS Kunbi TV - Supabase Protégé</title>
 <style>
   body { font-family:'Poppins', sans-serif; background:#000; color:#E0E0E0; margin:0; padding:0; display:flex; flex-direction:column; min-height:100vh; }
   header { background:#111; padding:1.2rem; text-align:center; color:#B38A1E; font-size:1.8rem; border-bottom:2px solid rgba(179,138,30,0.3);}
@@ -22,7 +22,8 @@
 </style>
 </head>
 <body>
-<header>🛠️ CMS Kunbi TV (Supabase)</header>
+
+<header>🛠️ CMS Kunbi TV (Supabase Protégé)</header>
 <main>
   <h2>Gestion des Actualités</h2>
   <form id="newsForm">
@@ -35,11 +36,19 @@
   </form>
   <div class="news-list" id="newsList"></div>
 </main>
+
 <footer>© 2025 Kunbi TV - CMS Supabase</footer>
 
-<!-- Supabase JS -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/supabase.min.js"></script>
 <script>
+  // 🔒 Protection simple par mot de passe
+  const password = prompt("Entrez le mot de passe CMS :");
+  if(password !== "kunbi2025") {
+    alert("Accès refusé !");
+    document.body.innerHTML = "<h2 style='color:red;text-align:center;margin-top:50px;'>Accès refusé 🚫</h2>";
+    throw new Error("Unauthorized access");
+  }
+
   const supabaseUrl = 'https://pjdozdmwevdezfzgltlc.supabase.co';
   const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBqZG96ZG13ZXZkZXpmemdsdGxjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjAwNzYyNDcsImV4cCI6MjA3NTY1MjI0N30.inXUrg_fWIRLagOnSFkRc8HxbrRD5OitBymNntrXfWQ';
   const supabase = supabase.createClient(supabaseUrl, supabaseKey);
