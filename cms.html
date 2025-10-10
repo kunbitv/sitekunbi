@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CMS Kunbi TV - Gestion des Actualités</title>
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-color: #000;
+      color: #E0E0E0;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+    header {
+      background-color: #111;
+      padding: 1.2rem;
+      text-align: center;
+      color: #B38A1E;
+      font-size: 1.8rem;
+      letter-spacing: 1px;
+      border-bottom: 2px solid rgba(179,138,30,0.3);
+    }
+    main {
+      flex: 1;
+      max-width: 900px;
+      margin: 2rem auto;
+      background-color: #111;
+      padding: 2rem;
+      border-radius: 15px;
+      box-shadow: 0 0 20px rgba(179,138,30,0.3);
+    }
+    h2 {
+      color: #B38A1E;
+      text-align: center;
+      margin-bottom: 1.5rem;
+    }
+    form {
+      display: grid;
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+    input, textarea {
+      width: 100%;
+      padding: 0.8rem;
+      border-radius: 8px;
+      border: 1px solid #333;
+      background-color: #222;
+      color: #fff;
+      font-size: 1rem;
+    }
+    button {
+      background: linear-gradient(90deg, #B38A1E, #d4af37);
+      color: #000;
+      border: none;
+      padding: 0.8rem 1.5rem;
+      border-radius: 8px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    button:hover {
+      background: linear-gradient(90deg, #d4af37, #B38A1E);
+      transform: translateY(-2px);
+    }
+    .news-list {
+      margin-top: 2rem;
+    }
+    .news-item {
+      background-color: #1a1a1a;
+      border-radius: 10px;
+      padding: 1rem;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .news-item img, .news-item video {
+      width: 80px;
+      height: 60px;
+      object-fit: cover;
+      border-radius: 6px;
+      margin-right: 1rem;
+    }
+    .actions button {
+      margin-left: 0.5rem;
+      background-color: transparent;
+      border: 1px solid #B38A1E;
+      color: #B38A1E;
+      padding: 5px 10px;
+      border-radius: 5px;
+    }
+    .actions button:hover {
+      background-color: #B38A1E;
+      color: #000;
+    }
+    footer {
+      text-align: center;
+      padding: 1rem;
+      color: #aaa;
+      font-size: 0.9rem;
+      border-top: 1px solid rgba(179,138,30,0.2);
+    }
+  </style>
+</head>
+<body>
+  <header>🛠️ CMS Kunbi TV</header>
+  <main>
+    <h2>Gestion des Actualités</h2>
+
+    <form id="newsForm" enctype="multipart/form-data">
+      <input type="text" id="titre" placeholder="Titre de l’actualité" required>
+      <textarea id="resume" rows="3" placeholder="Résumé" required></textarea>
+      <label for="fichier">Image ou vidéo :</label>
+      <input type="file" id="fichier" accept="image/*,video/*" required>
+      <input type="url" id="lien" placeholder="Lien YouTube ou article complet (facultatif)">
+      <button type="submit">➕ Ajouter l’actualité</button>
+    </form>
+
+    <div class="news-list" id="newsList"></div>
+  </main>
+
+  <footer>© 2025 Kunbi TV - CMS Administration</footer>
+
+  <script>
+    // 🔒 Protection par mot de passe simple
+    const pass = prompt("Entrez le mot de passe CMS :");
+    if (pass !== "kunbi2025") {
+      alert("Accès refusé !");
+      document.body.innerHTML = "<h2 style='color:red;text-align:center;margin-top:50px;'>Accès refusé 🚫</h2>";
+      throw new Error("Unauthorized access");
+    }
+
+    async function loadNews() {
+      const res = await fetch('data/actualites.json');
+      const data = await res.json();
+      renderNews(data);
+    }
+
+    async function saveNews(data) {
+      await fetch('save_news.php', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(data)
+      });
+    }
+
+    function renderNews(data) {
+      const list = document.getElementById('newsList');
+      if (!data.length) {
+        list.innerHTML = "<p style='text-align:center;color:#777;'>Aucune actualité enregistrée.</p>";
+        return;
+      }
+      list.innerHTML = data.map((item, i) => `
+        <div class="news-item">
+          <div style="flex:1;">
+            <strong>${item.titre}</strong><br>
+            <small>${item.resume}</small><br>
+            ${item.media.endsWith('.mp4') 
+              ? `<video width="120" height="80" controls><source src="${item.media}" type="video/mp4"></video>` 
+              : `<img src="${item.media}" alt="">`}
+          </div>
+          <div class="actions">
+            <button onclick="editNews(${i})">✏️</button>
+            <button onclick="deleteNews(${i})">🗑</button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    async function deleteNews(index) {
+      const res = await fetch('data/actualites.json');
+      const data = await res.json();
+      if (confirm("Supprimer cette actualité ?")) {
+        data.splice(index, 1);
+        await saveNews(data);
+        loadNews();
+      }
+    }
+
+    async function editNews(index) {
+      const res = await fetch('data/actualites.json');
+      const data = await res.json();
+      const item = data[index];
+      const newTitle = prompt("Modifier le titre :", item.titre);
+      if (!newTitle) return;
+      item.titre = newTitle;
+      await saveNews(data);
+      loadNews();
+    }
+
+    document.getElementById('newsForm').addEventListener('submit', async e => {
+      e.preventDefault();
+
+      const fileInput = document.getElementById('fichier');
+      if (!fileInput.files.length) {
+        alert("Veuillez sélectionner un fichier !");
+        return;
+      }
+
+      // 🔹 Upload du fichier
+      const fileData = new FormData();
+      fileData.append('file', fileInput.files[0]);
+
+      const uploadRes = await fetch('upload.php', { method: 'POST', body: fileData });
+      const uploadResult = await uploadRes.json();
+
+      if (!uploadResult.success) {
+        alert("Erreur d’upload !");
+        return;
+      }
+
+      // 🔹 Enregistrement de l’actualité
+      const res = await fetch('data/actualites.json');
+      const data = await res.json();
+
+      const newItem = {
+        titre: document.getElementById('titre').value,
+        resume: document.getElementById('resume').value,
+        media: uploadResult.filepath,
+        lien: document.getElementById('lien').value || ""
+      };
+
+      data.unshift(newItem);
+      await saveNews(data);
+
+      e.target.reset();
+      loadNews();
+    });
+
+    loadNews();
+  </script>
+</body>
+</html>

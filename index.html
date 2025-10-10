@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kunbi TV - La voix des sans voix</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    /* 🎨 Palette Kunbi TV */
+    :root {
+      --primary: #B38A1E;
+      --secondary: #E0E0E0;
+      --accent: #000;
+      --light: #FFF;
+      --dark: #111;
+      --gray: #6C757D;
+    }
+
+    * {margin:0;padding:0;box-sizing:border-box;}
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-color: var(--light);
+      color: var(--dark);
+      line-height: 1.6;
+      scroll-behavior: smooth;
+    }
+
+    .container {
+      width: 90%;
+      max-width: 1200px;
+      margin: auto;
+    }
+
+    /* 🟡 Header */
+    header {
+      background: rgba(0,0,0,0.95);
+      color: var(--secondary);
+      padding: 1rem 0;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      box-shadow: 0 2px 20px rgba(179,138,30,0.2);
+      backdrop-filter: blur(10px);
+    }
+    .header-container {
+      display: flex;justify-content: space-between;align-items: center;
+    }
+    .logo {height:60px;width:auto;}
+    nav ul {display:flex;list-style:none;}
+    nav ul li {margin-left:2rem;}
+    nav ul li a {
+      color:var(--secondary);
+      text-decoration:none;
+      position:relative;
+    }
+    nav ul li a:hover {color:var(--primary);}
+    .mobile-menu {display:none;font-size:1.5rem;cursor:pointer;}
+
+    /* 🌍 Hero */
+    .hero {
+      position:relative;
+      height:100vh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      text-align:center;
+      color:var(--secondary);
+      background: radial-gradient(ellipse at center, #0a0e2a 0%, #000000 100%);
+      overflow:hidden;
+    }
+
+    .galaxy-background {
+      position:absolute;
+      top:0;left:0;width:100%;height:100%;
+      z-index:1;overflow:hidden;
+    }
+
+    .star {position:absolute;background:white;border-radius:50%;animation: twinkle linear infinite;}
+    .star.small {width:1px;height:1px;}
+    .star.medium {width:2px;height:2px;}
+    .star.large {width:3px;height:3px;}
+    @keyframes twinkle {
+      0%,100%{opacity:.3;}
+      50%{opacity:1;}
+    }
+
+    .shooting-star {
+      position:absolute;width:3px;height:3px;background:white;border-radius:50%;
+      box-shadow:0 0 20px 5px white;
+      animation: shootingStar 6s linear infinite;
+    }
+    @keyframes shootingStar {
+      0%{transform:translate(-100px,-100px);}
+      100%{transform:translate(100vw,100vh);}
+    }
+
+    .hero-content {
+      position:relative;
+      z-index:2;
+      max-width:800px;
+    }
+    .hero-content h2 {
+      font-size:3rem;
+      color:var(--primary);
+      text-shadow:0 0 25px rgba(179,138,30,.7);
+    }
+    .hero-content p {
+      font-size:1.3rem;margin:1rem 0 2rem;
+    }
+    .btn {
+      background:linear-gradient(135deg,var(--primary),#d4af37);
+      color:white;padding:15px 40px;border-radius:50px;
+      text-decoration:none;font-weight:bold;
+      transition:all .3s ease;
+    }
+    .btn:hover {transform:translateY(-3px);}
+
+    /* Sections */
+    .section {padding:5rem 0;}
+    .section h2 {
+      text-align:center;
+      margin-bottom:2rem;
+      color:var(--primary);
+      font-size:2.5rem;
+    }
+
+    /* 📰 Actualités */
+    .news-grid {
+      display:grid;
+      grid-template-columns:repeat(auto-fill,minmax(320px,1fr));
+      gap:2rem;
+    }
+    .news-card {
+      background:#fff;
+      border-radius:15px;
+      box-shadow:0 8px 25px rgba(0,0,0,.1);
+      overflow:hidden;
+      transition:transform .3s ease;
+    }
+    .news-card:hover {transform:translateY(-8px);}
+    .news-card img {
+      width:100%;height:200px;object-fit:cover;
+    }
+    .news-card-content {
+      padding:1.5rem;
+    }
+    .news-card-content h3 {
+      color:var(--primary);
+      margin-bottom:.5rem;
+    }
+    .news-card-content p {
+      color:#555;
+      font-size:1rem;
+    }
+
+    /* 🎬 Nos Programmes */
+    .playlist-grid {
+      display:grid;
+      grid-template-columns:repeat(auto-fill,minmax(320px,1fr));
+      gap:2rem;
+    }
+    .playlist-card {
+      background:var(--light);
+      border-radius:12px;
+      box-shadow:0 10px 30px rgba(0,0,0,0.1);
+      padding:1.5rem;
+      transition:transform .3s ease;
+    }
+    .playlist-card:hover {transform:translateY(-8px);}
+    .playlist-card h3 {
+      color:var(--primary);
+      margin-bottom:1rem;
+    }
+    .playlist-embed iframe {
+      width:100%;border-radius:10px;border:none;
+    }
+
+    /* 📡 Web TV */
+    .live-section {background:var(--accent);color:var(--secondary);text-align:center;}
+    .video-container {
+      margin:2rem auto;
+      max-width:900px;
+      border:3px solid var(--primary);
+      border-radius:15px;
+      overflow:hidden;
+    }
+    video {width:100%;display:block;}
+
+    /* 📞 Contact */
+    form {
+      display:grid;
+      gap:1.2rem;
+      max-width:600px;
+      margin:auto;
+    }
+    input,textarea {
+      padding:1rem;border:2px solid #ddd;border-radius:8px;font-size:1rem;
+    }
+    button {
+      background:linear-gradient(135deg,var(--primary),#d4af37);
+      color:white;border:none;padding:1rem;border-radius:50px;
+      font-size:1.1rem;font-weight:bold;cursor:pointer;
+      transition:.3s;
+    }
+    button:hover {transform:translateY(-2px);}
+
+    /* Footer */
+    footer {
+      background:var(--accent);
+      color:var(--secondary);
+      padding:3rem 0;
+      text-align:center;
+    }
+    .social-links a {
+      display:inline-block;
+      width:45px;height:45px;line-height:45px;
+      background:rgba(255,255,255,.1);
+      color:white;border-radius:50%;
+      margin:0 .3rem;
+      transition:.3s;
+    }
+    .social-links a:hover {background:var(--primary);}
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header>
+    <div class="container header-container">
+      <img src="logo-kunbi.png" alt="Logo Kunbi TV" class="logo">
+      <div class="mobile-menu">☰</div>
+      <nav>
+        <ul>
+          <li><a href="#accueil">Accueil</a></li>
+          <li><a href="#actualites">Actualités</a></li>
+          <li><a href="#programmes">Nos Programmes</a></li>
+          <li><a href="#live">Web TV</a></li>
+          <li><a href="#contact">Contact</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <!-- 🌍 Hero -->
+  <section id="accueil" class="hero">
+    <div class="galaxy-background" id="galaxy"></div>
+    <div class="hero-content">
+      <h2>L'expression partagée</h2>
+      <p>Kunbi TV — la voix des sans voix, la vitrine de la culture soninké et des peuples frères à travers le monde.</p>
+      <a href="#live" class="btn"><i class="fas fa-play-circle"></i> Regarder en direct</a>
+    </div>
+  </section>
+
+  <!-- 📰 Actualités -->
+  <section id="actualites" class="section">
+    <div class="container">
+      <h2>Actualités</h2>
+      <div class="news-grid">
+        <div class="news-card">
+          <img src="actu1.jpg" alt="Actualité 1">
+          <div class="news-card-content">
+            <h3>Kunbi TV fête la culture soninké</h3>
+            <p>Retour sur un événement exceptionnel qui a réuni artistes, intellectuels et passionnés autour de la culture soninké.</p>
+          </div>
+        </div>
+        <div class="news-card">
+          <img src="actu2.jpg" alt="Actualité 2">
+          <div class="news-card-content">
+            <h3>Lancement de la nouvelle grille 2025</h3>
+            <p>Découvrez nos nouvelles émissions, nos nouveaux visages et nos ambitions pour l'année à venir.</p>
+          </div>
+        </div>
+        <div class="news-card">
+          <img src="actu3.jpg" alt="Actualité 3">
+          <div class="news-card-content">
+            <h3>Kunbi Débat Express : succès populaire</h3>
+            <p>Une émission qui donne la parole aux citoyens sur les questions sociales et culturelles actuelles.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 🎬 Nos Programmes -->
+  <section id="programmes" class="section">
+    <div class="container">
+      <h2>Nos Programmes</h2>
+      <div class="playlist-grid">
+
+        <div class="playlist-card">
+          <h3>Information</h3>
+          <div class="playlist-embed">
+            <iframe src="https://www.youtube.com/embed/videoseries?list=PLKFO7rykPHFWk0_T5fGnwI9r7y2n1-Yed" allowfullscreen></iframe>
+          </div>
+        </div>
+
+        <div class="playlist-card">
+          <h3>Kunbi Débat Express</h3>
+          <div class="playlist-embed">
+            <iframe src="https://www.youtube.com/embed/videoseries?list=PLKFO7rykPHFVDvHLXdxzmNT2UsIroXWCr" allowfullscreen></iframe>
+          </div>
+        </div>
+
+        <div class="playlist-card">
+          <h3>Soninkara Dungre (Miroir de Soninkara)</h3>
+          <div class="playlist-embed">
+            <iframe src="https://www.youtube.com/embed/videoseries?list=PLKFO7rykPHFXFC1Emfqi5p92EvjjVkqCz" allowfullscreen></iframe>
+          </div>
+        </div>
+
+        <div class="playlist-card">
+          <h3>Yaxaru Ndaaxa</h3>
+          <div class="playlist-embed">
+            <iframe src="https://www.youtube.com/embed/videoseries?list=PLKFO7rykPHFX7Yfy5gVuM3uPSFnqM16tA" allowfullscreen></iframe>
+          </div>
+        </div>
+
+        <div class="playlist-card">
+          <h3>Éducation</h3>
+          <div class="playlist-embed">
+            <iframe src="https://www.youtube.com/embed/videoseries?list=PLKFO7rykPHFUcGx74e1GFXFYtu3GVt0sY" allowfullscreen></iframe>
+          </div>
+        </div>
+
+        <div class="playlist-card">
+          <h3>Culture</h3>
+          <div class="playlist-embed">
+            <iframe src="https://www.youtube.com/embed/videoseries?list=PLKFO7rykPHFW7YXnaK7Hr-f3uEqXEr8Mg" allowfullscreen></iframe>
+          </div>
+        </div>
+
+        <div class="playlist-card">
+          <h3>Émissions Spéciales</h3>
+          <div class="playlist-embed">
+            <iframe src="https://www.youtube.com/embed/videoseries?list=PLKFO7rykPHFUa2uI0Kv-G8kdH3gl57LCT" allowfullscreen></iframe>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- 📡 Web TV -->
+  <section id="live" class="section live-section">
+    <div class="container">
+      <h2>Web TV / Radio</h2>
+      <p>Regardez Kunbi TV en direct :</p>
+      <div class="video-container">
+        <video id="video" controls></video>
+      </div>
+    </div>
+  </section>
+
+  <!-- 📞 Contact -->
+  <section id="contact" class="section">
+    <div class="container">
+      <h2>Contactez-nous</h2>
+      <form id="contact-form">
+        <input type="text" placeholder="Votre nom" required>
+        <input type="email" placeholder="Votre email" required>
+        <textarea rows="5" placeholder="Votre message" required></textarea>
+        <button type="submit">Envoyer</button>
+      </form>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <p>© 2025 Kunbi TV — Tous droits réservés</p>
+      <div class="social-links">
+        <a href="https://facebook.com"><i class="fab fa-facebook-f"></i></a>
+        <a href="https://youtube.com/@kunbitv"><i class="fab fa-youtube"></i></a>
+        <a href="#"><i class="fab fa-twitter"></i></a>
+        <a href="#"><i class="fab fa-instagram"></i></a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- 🎥 HLS.js -->
+  <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+  <script>
+    // Animation galaxie
+    function createGalaxy() {
+      const galaxy = document.getElementById('galaxy');
+      for (let i = 0; i < 200; i++) {
+        const star = document.createElement('div');
+        star.className = `star ${['small','medium','large'][Math.floor(Math.random()*3)]}`;
+        star.style.left = `${Math.random()*100}%`;
+        star.style.top = `${Math.random()*100}%`;
+        star.style.animationDuration = `${2+Math.random()*4}s`;
+        galaxy.appendChild(star);
+      }
+      for (let i=0;i<5;i++){
+        const s=document.createElement('div');
+        s.className='shooting-star';
+        s.style.left=`${Math.random()*20}%`;
+        s.style.top=`${Math.random()*20}%`;
+        galaxy.appendChild(s);
+      }
+    }
+
+    // Vidéo live
+    const video=document.getElementById('video');
+    const videoSrc='https://livestream.kgsols.com/push/Kunbitv/playlist.m3u8';
+    if(Hls.isSupported()){const hls=new Hls();hls.loadSource(videoSrc);hls.attachMedia(video);}
+    else if(video.canPlayType('application/vnd.apple.mpegurl')){video.src=videoSrc;}
+
+    // Menu mobile
+    document.querySelector('.mobile-menu').addEventListener('click',()=>{
+      document.querySelector('nav ul').classList.toggle('show');
+    });
+
+    // Formulaire contact
+    document.getElementById('contact-form').addEventListener('submit',e=>{
+      e.preventDefault();alert('Merci pour votre message !');e.target.reset();
+    });
+
+    createGalaxy();
+  </script>
+</body>
+</html>
