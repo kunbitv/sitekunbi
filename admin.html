@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CMS Kunbi TV</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/supabase.min.js"></script>
+  <style>
+    body {font-family:Poppins,sans-serif;background:#000;color:#E0E0E0;margin:0;padding:0;}
+    header, footer {text-align:center;padding:1rem;background:#111;color:#B38A1E;}
+    main {max-width:900px;margin:2rem auto;padding:2rem;background:#111;border-radius:15px;}
+    form {display:grid;gap:1rem;}
+    input,textarea {padding:.8rem;border-radius:8px;border:1px solid #333;background:#222;color:#fff;}
+    button {background:linear-gradient(90deg,#B38A1E,#d4af37);border:none;padding:.8rem 1.5rem;color:#000;font-weight:bold;cursor:pointer;border-radius:8px;}
+    button:hover {background:linear-gradient(90deg,#d4af37,#B38A1E);}
+    .news-item {display:flex;justify-content:space-between;align-items:center;background:#1a1a1a;padding:1rem;margin-bottom:1rem;border-radius:10px;}
+    .news-item img, .news-item video {width:80px;height:60px;object-fit:cover;margin-right:1rem;border-radius:6px;}
+    .actions button {margin-left:.5rem;background:transparent;border:1px solid #B38A1E;color:#B38A1E;padding:5px 10px;border-radius:5px;}
+    .actions button:hover {background:#B38A1E;color:#000;}
+  </style>
+</head>
+<body>
+
+<header>🛠️ CMS Kunbi TV</header>
+<main>
+  <h2>Gestion des Actualités</h2>
+  <form id="newsForm">
+    <input type="text" id="titre" placeholder="Titre" required>
+    <textarea id="resume" rows="3" placeholder="Résumé" required></textarea>
+    <input type="file" id="fichier" accept="image/*,video/*" required>
+    <input type="url" id="lien" placeholder="Lien YouTube ou article (facultatif)">
+    <button type="submit">➕ Ajouter</button>
+  </form>
+  <div id="newsList"></div>
+</main>
+<footer>© 2025 Kunbi TV - CMS</footer>
+
+<script>
+  const supabaseUrl = 'https://pjdozdmwevdezfzgltlc.supabase.co';
+  const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBqZG96ZG13ZXZkZXpmemdsdGxjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjAwNzYyNDcsImV4cCI6MjA3NTY1MjI0N30.inXUrg_fWIRLagOnSFkRc8HxbrRD5OitBymNntrXfWQ';
+  const supabase = supabase.createClient(supabaseUrl, supabaseKey);
+
+  async function loadNews() {
+    const { data, error } = await supabase.from('actualites').select('*').order('created_at', {ascending:false});
+    const list = document.getElementById('newsList');
+    if(error){list.innerHTML='Erreur de chargement';return;}
+    if(!data.length){list.innerHTML='<p>Aucune actualité enregistrée.</p>';return;}
+    list.innerHTML = data.map((item)=>`
+      <div class="news-item">
+        <div style="flex:1;">
+          <strong>${item.titre}</strong><br>
+          <small>${item.resume}</small><br>
+          ${item.media.endsWith('.mp4')?`<video width="120" height="80" controls><source src="${item.media}"></video>`:`<img src="${item.media}">`}
+        </div>
+        <div class="actions">
+          <button onclick="editNews(${item.id})">✏️</button>
+          <button onclick="deleteNews(${item.id})">🗑</button>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  async function deleteNews(id){
+    if(!confirm('Supprimer cette actualité ?')) return;
+    await supabase.from('actualites').delete().eq('id', id);
+    loadNews();
+  }
+
+  async function editNews(id){
+    const { data } = await supabase.from('actualites').select('*').eq('id',id).single();
+    const newTitle = prompt('Modifier le titre', data.titre);
+    if(!newTitle) return;
+    await supabase.from('actualites').update({titre:newTitle}).eq('id',id);
+    loadNews();
+  }
+
+  document.getElementById('newsForm').addEventListener('submit', async e=>{
+    e.preventDefault();
+    const titre = document.getElementById('titre').value;
+    const resume = document.getElementById('resume').value;
+    const lien = document.getElementById('lien').value || '';
+    const file = document.getElementById('fichier').files[0];
+    if(!file){alert('Sélectionnez un fichier !');return;}
+
+    const { data:uploadData, error:uploadError } = await supabase.storage.from('actualites').upload(`${Date.now()}_${file.name}`, file, {upsert:true});
+    if(uploadError){alert('Erreur upload');return;}
+    const { publicUrl } = supabase.storage.from('actualites').getPublicUrl(uploadData.path);
+
+    await supabase.from('actualites').insert([{titre,resume,media:publicUrl,lien}]);
+    e.target.reset();
+    loadNews();
+  });
+
+  loadNews();
+</script>
+
+</body>
+</html>
