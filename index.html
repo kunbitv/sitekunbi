@@ -7,905 +7,1206 @@
   <meta name="description" content="Kunbi TV, la vitrine de la culture soninké et des peuples frères, actualités, programmes et Web TV en direct.">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
   <style>
+    /* 🎨 Variables CSS */
     :root {
       --primary: #B38A1E;
       --secondary: #E0E0E0;
-      --accent: #000;
-      --light: #FFF;
-      --dark: #111;
+      --accent: #000000;
+      --light: #FFFFFF;
+      --dark: #111111;
       --gray: #6C757D;
     }
-    * {margin:0;padding:0;box-sizing:border-box;}
-    body {font-family:'Poppins',sans-serif;background-color:var(--light);color:var(--dark);line-height:1.6;scroll-behavior:smooth;overflow-x:hidden;}
-    a {text-decoration:none;}
-    .container {width:90%;max-width:1200px;margin:auto;padding:0 15px;}
-    
-    /* Header */
+
+    /* 🔧 Reset et base */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-color: var(--light);
+      color: var(--dark);
+      line-height: 1.6;
+      scroll-behavior: smooth;
+      overflow-x: hidden;
+    }
+
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .container {
+      width: 90%;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 15px;
+    }
+
+    /* 🟡 Header */
     header {
-      background:rgba(0,0,0,0.95);
-      color:var(--secondary);
-      padding:1rem 0;
-      position:sticky;
-      top:0;
-      z-index:1000;
-      box-shadow:0 2px 20px rgba(179,138,30,0.2);
-      backdrop-filter:blur(10px);
-      transition:all 0.3s ease;
+      background: rgba(0, 0, 0, 0.95);
+      color: var(--secondary);
+      padding: 1rem 0;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      box-shadow: 0 2px 20px rgba(179, 138, 30, 0.2);
+      backdrop-filter: blur(10px);
+      transition: all 0.3s ease;
     }
-    header.scrolled {padding:0.7rem 0;background:rgba(0,0,0,0.98);}
-    .header-container {display:flex;justify-content:space-between;align-items:center;}
-    .logo {height:60px;width:auto;transition: transform 0.3s ease;}
-    .logo:hover {transform: scale(1.05);}
-    nav ul {display:flex;list-style:none;}
-    nav ul li {margin-left:2rem;}
+
+    header.scrolled {
+      padding: 0.7rem 0;
+      background: rgba(0, 0, 0, 0.98);
+    }
+
+    .header-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      height: 60px;
+      width: auto;
+      transition: transform 0.3s ease;
+    }
+
+    .logo:hover {
+      transform: scale(1.05);
+    }
+
+    nav ul {
+      display: flex;
+      list-style: none;
+    }
+
+    nav ul li {
+      margin-left: 2rem;
+    }
+
     nav ul li a {
-      color:var(--secondary);
-      font-weight:500;
-      position:relative;
-      padding:0.5rem 0;
-      transition:all 0.3s ease;
+      color: var(--secondary);
+      font-weight: 500;
+      position: relative;
+      padding: 0.5rem 0;
+      transition: all 0.3s ease;
     }
+
     nav ul li a::after {
-      content:'';
-      position:absolute;
-      bottom:0;
-      left:0;
-      width:0;
-      height:2px;
-      background:var(--primary);
-      transition:width 0.3s ease;
-    }
-    nav ul li a:hover {color:var(--primary);}
-    nav ul li a:hover::after {width:100%;}
-    .mobile-menu {display:none;font-size:1.5rem;cursor:pointer;transition:color 0.3s ease;}
-    .mobile-menu:hover {color: var(--primary);}
-    nav ul.show {
-      display:flex;
-      flex-direction:column;
-      gap:1rem;
-      background:rgba(0,0,0,0.95);
-      position:absolute;
-      top:100%;
-      left:0;
-      right:0;
-      padding:1rem;
-      border-radius:0 0 10px 10px;
-      backdrop-filter:blur(10px);
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: var(--primary);
+      transition: width 0.3s ease;
     }
 
-    /* Hero */
+    nav ul li a:hover {
+      color: var(--primary);
+    }
+
+    nav ul li a:hover::after {
+      width: 100%;
+    }
+
+    .mobile-menu {
+      display: none;
+      font-size: 1.5rem;
+      cursor: pointer;
+      transition: color 0.3s ease;
+    }
+
+    .mobile-menu:hover {
+      color: var(--primary);
+    }
+
+    /* Menu mobile */
+    @media (max-width: 768px) {
+      .mobile-menu {
+        display: block;
+      }
+
+      nav ul {
+        display: none;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        background: rgba(0, 0, 0, 0.95);
+        flex-direction: column;
+        padding: 1rem;
+        border-radius: 0 0 10px 10px;
+        backdrop-filter: blur(10px);
+        gap: 1rem;
+      }
+
+      nav ul.show {
+        display: flex;
+      }
+
+      nav ul li {
+        margin: 0;
+        text-align: center;
+        padding: 0.8rem 0;
+      }
+    }
+
+    /* 🌍 Hero Section */
     .hero {
-      position:relative;
-      height:100vh;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      text-align:center;
-      color:var(--secondary);
-      background:radial-gradient(ellipse at center,#0a0e2a 0%,#000 100%);
-      overflow:hidden;
+      position: relative;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      color: var(--secondary);
+      background: radial-gradient(ellipse at center, #0a0e2a 0%, #000000 100%);
+      overflow: hidden;
     }
+
     .galaxy-background {
-      position:absolute;
-      top:0;
-      left:0;
-      width:100%;
-      height:100%;
-      z-index:1;
-      overflow:hidden;
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+      overflow: hidden;
     }
+
     .star {
-      position:absolute;
-      background:white;
-      border-radius:50%;
-      animation:twinkle linear infinite;
-      box-shadow:0 0 6px rgba(255,255,255,0.8);
+      position: absolute;
+      background: white;
+      border-radius: 50%;
+      animation: twinkle linear infinite;
+      box-shadow: 0 0 6px rgba(255, 255, 255, 0.8);
     }
-    .star.small {width:1px;height:1px;}
-    .star.medium {width:2px;height:2px;}
-    .star.large {width:3px;height:3px;}
+
+    .star.small {
+      width: 1px;
+      height: 1px;
+    }
+
+    .star.medium {
+      width: 2px;
+      height: 2px;
+    }
+
+    .star.large {
+      width: 3px;
+      height: 3px;
+    }
+
     @keyframes twinkle {
-      0%,100%{opacity:.3;transform:scale(1);}
-      50%{opacity:1;transform:scale(1.2);}
+      0%, 100% {
+        opacity: 0.3;
+        transform: scale(1);
+      }
+      50% {
+        opacity: 1;
+        transform: scale(1.2);
+      }
     }
+
     .shooting-star {
-      position:absolute;
-      width:3px;
-      height:3px;
-      background:white;
-      border-radius:50%;
-      box-shadow:0 0 20px 5px white;
-      animation:shootingStar 6s linear infinite;
+      position: absolute;
+      width: 3px;
+      height: 3px;
+      background: white;
+      border-radius: 50%;
+      box-shadow: 0 0 20px 5px white;
+      animation: shootingStar 6s linear infinite;
     }
+
     @keyframes shootingStar {
-      0%{
-        transform:translateX(-100px) translateY(-100px) rotate(45deg);
-        opacity:1;
-        width:3px;
+      0% {
+        transform: translateX(-100px) translateY(-100px) rotate(45deg);
+        opacity: 1;
+        width: 3px;
       }
-      10%{
-        opacity:1;
-        width:50px;
+      10% {
+        opacity: 1;
+        width: 50px;
       }
-      20%,100%{
-        transform:translateX(100vw) translateY(100vh) rotate(45deg);
-        opacity:0;
-        width:3px;
+      20%, 100% {
+        transform: translateX(100vw) translateY(100vh) rotate(45deg);
+        opacity: 0;
+        width: 3px;
       }
     }
+
     .hero-content {
-      position:relative;
-      z-index:2;
-      max-width:800px;
-      padding:0 20px;
-      animation:fadeInUp 1s ease-out;
+      position: relative;
+      z-index: 2;
+      max-width: 800px;
+      padding: 0 20px;
+      animation: fadeInUp 1s ease-out;
     }
+
     @keyframes fadeInUp {
-      from{opacity:0;transform:translateY(30px);}
-      to{opacity:1;transform:translateY(0);}
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
+
     .hero-content h2 {
-      font-size:3rem;
-      color:var(--primary);
-      text-shadow:0 0 25px rgba(179,138,30,.7);
-      margin-bottom:1rem;
-      animation:titleGlow 3s ease-in-out infinite alternate;
+      font-size: 3.5rem;
+      color: var(--primary);
+      text-shadow: 0 0 25px rgba(179, 138, 30, 0.7);
+      margin-bottom: 1rem;
+      animation: titleGlow 3s ease-in-out infinite alternate;
     }
+
     @keyframes titleGlow {
-      0%{text-shadow:0 0 20px rgba(179,138,30,.7);}
-      100%{text-shadow:0 0 40px rgba(179,138,30,1),0 0 60px rgba(179,138,30,.8);}
+      0% {
+        text-shadow: 0 0 20px rgba(179, 138, 30, 0.7);
+      }
+      100% {
+        text-shadow: 0 0 40px rgba(179, 138, 30, 1), 0 0 60px rgba(179, 138, 30, 0.8);
+      }
     }
+
     .hero-content p {
-      font-size:1.3rem;
-      margin:1rem 0 2rem;
-      text-shadow:0 0 10px rgba(0,0,0,0.8);
+      font-size: 1.3rem;
+      margin: 1.5rem 0 2.5rem;
+      text-shadow: 0 0 10px rgba(0, 0, 0, 0.8);
     }
+
     .btn {
-      background:linear-gradient(135deg,var(--primary),#d4af37);
-      color:white;
-      padding:15px 40px;
-      border-radius:50px;
-      font-weight:bold;
-      display:inline-flex;
-      align-items:center;
-      gap:10px;
-      box-shadow:0 5px 20px rgba(179,138,30,0.4);
-      position:relative;
-      overflow:hidden;
-      transition:all .3s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: linear-gradient(135deg, var(--primary), #d4af37);
+      color: white;
+      padding: 15px 40px;
+      border-radius: 50px;
+      font-weight: bold;
+      transition: all 0.3s ease;
+      box-shadow: 0 5px 20px rgba(179, 138, 30, 0.4);
+      position: relative;
+      overflow: hidden;
     }
+
     .btn::before {
-      content:'';
-      position:absolute;
-      top:0;
-      left:-100%;
-      width:100%;
-      height:100%;
-      background:linear-gradient(90deg,transparent,rgba(255,255,255,0.2),transparent);
-      transition:left 0.5s;
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+      transition: left 0.5s;
     }
+
     .btn:hover {
-      transform:translateY(-3px);
-      box-shadow:0 10px 30px rgba(179,138,30,0.6);
+      transform: translateY(-3px);
+      box-shadow: 0 10px 30px rgba(179, 138, 30, 0.6);
     }
-    .btn:hover::before {left:100%;}
 
-    /* Sections */
-    .section {padding:5rem 0;}
+    .btn:hover::before {
+      left: 100%;
+    }
+
+    /* 📋 Sections générales */
+    .section {
+      padding: 5rem 0;
+    }
+
     .section h2 {
-      text-align:center;
-      margin-bottom:3rem;
-      color:var(--primary);
-      font-size:2.5rem;
-      position:relative;
-    }
-    .section h2::after {
-      content:'';
-      display:block;
-      width:80px;
-      height:4px;
-      background:linear-gradient(90deg,var(--primary),#FFD700);
-      margin:15px auto;
-      border-radius:2px;
+      text-align: center;
+      margin-bottom: 3rem;
+      color: var(--primary);
+      font-size: 2.5rem;
+      position: relative;
     }
 
-    /* Actualités */
-    .news-grid {
-      display:grid;
-      grid-template-columns:repeat(auto-fill,minmax(320px,1fr));
-      gap:2rem;
+    .section h2::after {
+      content: '';
+      display: block;
+      width: 80px;
+      height: 4px;
+      background: linear-gradient(90deg, var(--primary), #FFD700);
+      margin: 15px auto;
+      border-radius: 2px;
     }
+
+    /* 📰 Section Actualités */
+    .news-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 2rem;
+    }
+
     .news-card {
-      background:#fff;
-      border-radius:15px;
-      box-shadow:0 8px 25px rgba(0,0,0,.1);
-      overflow:hidden;
-      transition:all .3s ease;
-      position:relative;
+      background: #fff;
+      border-radius: 15px;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+      transition: all 0.3s ease;
+      position: relative;
       cursor: pointer;
     }
+
     .news-card::before {
-      content:'';
-      position:absolute;
-      top:0;
-      left:0;
-      right:0;
-      height:4px;
-      background:linear-gradient(90deg,var(--primary),#FFD700);
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, var(--primary), #FFD700);
     }
+
     .news-card:hover {
-      transform:translateY(-8px);
-      box-shadow:0 15px 40px rgba(0,0,0,.15);
+      transform: translateY(-8px);
+      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
     }
-    .news-card img,.news-card video {
-      width:100%;
-      height:200px;
-      object-fit:cover;
-      transition:transform 0.3s ease;
+
+    .news-card img,
+    .news-card video {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+      transition: transform 0.3s ease;
     }
-    .news-card:hover img,.news-card:hover video {
-      transform:scale(1.05);
+
+    .news-card:hover img,
+    .news-card:hover video {
+      transform: scale(1.05);
     }
-    .news-card-content {padding:1.5rem;}
+
+    .news-card-content {
+      padding: 1.5rem;
+    }
+
     .news-card-content h3 {
-      color:var(--primary);
-      margin-bottom:.5rem;
-      font-size:1.3rem;
+      color: var(--primary);
+      margin-bottom: 0.5rem;
+      font-size: 1.3rem;
     }
+
     .news-card-content p {
-      color:#555;
-      font-size:1rem;
-      line-height:1.6;
-      margin-bottom:1rem;
+      color: #555;
+      font-size: 1rem;
+      line-height: 1.6;
+      margin-bottom: 1rem;
     }
+
     .news-card-content a {
-      color:var(--primary);
-      font-weight:bold;
-      transition:color 0.3s ease;
+      color: var(--primary);
+      font-weight: bold;
+      transition: color 0.3s ease;
     }
+
     .news-card-content a:hover {
-      color:#d4af37;
-      text-decoration:underline;
+      color: #d4af37;
+      text-decoration: underline;
     }
+
     .news-date {
-      color:var(--gray);
-      font-size:0.9rem;
-      margin-top:0.5rem;
+      color: var(--gray);
+      font-size: 0.9rem;
+      margin-top: 0.5rem;
     }
+
+    /* État de chargement */
     .loading {
-      text-align:center;
-      padding:3rem;
-      color:var(--gray);
-      grid-column:1/-1;
+      text-align: center;
+      padding: 3rem;
+      color: var(--gray);
+      grid-column: 1 / -1;
     }
+
     .loading-spinner {
-      display:inline-block;
-      width:40px;
-      height:40px;
-      border:4px solid #f3f3f3;
-      border-top:4px solid var(--primary);
-      border-radius:50%;
-      animation:spin 1s linear infinite;
-      margin-bottom:1rem;
+      display: inline-block;
+      width: 40px;
+      height: 40px;
+      border: 4px solid #f3f3f3;
+      border-top: 4px solid var(--primary);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin-bottom: 1rem;
     }
+
     @keyframes spin {
-      0%{transform:rotate(0deg);}
-      100%{transform:rotate(360deg);}
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
     }
 
-    /* Programmes */
+    /* 🎬 Section Programmes */
     .playlist-grid {
-      display:grid;
-      grid-template-columns:repeat(auto-fill,minmax(320px,1fr));
-      gap:2rem;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 2rem;
     }
+
     .playlist-card {
-      background:var(--light);
-      border-radius:12px;
-      box-shadow:0 10px 30px rgba(0,0,0,0.1);
-      padding:1.5rem;
-      transition:all .3s ease;
-      position:relative;
-      overflow:hidden;
+      background: var(--light);
+      border-radius: 12px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+      padding: 1.5rem;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
     }
+
     .playlist-card::before {
-      content:'';
-      position:absolute;
-      top:0;
-      left:0;
-      right:0;
-      height:4px;
-      background:linear-gradient(90deg,var(--primary),#FFD700);
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, var(--primary), #FFD700);
     }
+
     .playlist-card:hover {
-      transform:translateY(-8px);
-      box-shadow:0 15px 40px rgba(0,0,0,.15);
+      transform: translateY(-8px);
+      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
     }
+
     .playlist-card h3 {
-      color:var(--primary);
-      margin-bottom:1rem;
-      font-size:1.2rem;
+      color: var(--primary);
+      margin-bottom: 1rem;
+      font-size: 1.2rem;
     }
+
     .playlist-embed iframe {
-      width:100%;
-      height:200px;
-      border-radius:10px;
-      border:none;
+      width: 100%;
+      height: 200px;
+      border-radius: 10px;
+      border: none;
     }
 
-    /* Web TV */
+    /* 📡 Section Web TV */
     .live-section {
-      background:var(--accent);
-      color:var(--secondary);
-      text-align:center;
-      position:relative;
+      background: var(--accent);
+      color: var(--secondary);
+      text-align: center;
+      position: relative;
     }
+
     .live-indicator {
-      position:absolute;
-      top:1rem;
-      right:1rem;
-      background:red;
-      color:white;
-      padding:5px 10px;
-      border-radius:20px;
-      font-size:0.9rem;
-      font-weight:bold;
-      animation:blink 1s infinite;
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      background: red;
+      color: white;
+      padding: 5px 10px;
+      border-radius: 20px;
+      font-size: 0.9rem;
+      font-weight: bold;
+      animation: blink 1s infinite;
     }
+
     @keyframes blink {
-      0%,50%,100%{opacity:1;}
-      25%,75%{opacity:0;}
+      0%, 50%, 100% { opacity: 1; }
+      25%, 75% { opacity: 0; }
     }
+
     .video-container {
-      margin:2rem auto;
-      max-width:900px;
-      border:3px solid var(--primary);
-      border-radius:15px;
-      overflow:hidden;
-      box-shadow:0 15px 40px rgba(0,0,0,0.5);
+      margin: 2rem auto;
+      max-width: 900px;
+      border: 3px solid var(--primary);
+      border-radius: 15px;
+      overflow: hidden;
+      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5);
     }
-    video {width:100%;display:block;}
 
-    /* Contact */
+    video {
+      width: 100%;
+      display: block;
+    }
+
+    /* 📞 Section Contact */
     form {
-      display:grid;
-      gap:1.2rem;
-      max-width:600px;
-      margin:auto;
+      display: grid;
+      gap: 1.2rem;
+      max-width: 600px;
+      margin: 0 auto;
     }
-    input,textarea {
-      padding:1rem;
-      border:2px solid #ddd;
-      border-radius:8px;
-      font-size:1rem;
-      font-family:inherit;
-      transition:all 0.3s ease;
-      background:#f8f9fa;
+
+    input, textarea {
+      padding: 1rem;
+      border: 2px solid #ddd;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-family: inherit;
+      transition: all 0.3s ease;
+      background: #f8f9fa;
+      width: 100%;
     }
-    input:focus,textarea:focus {
-      outline:none;
-      border-color:var(--primary);
-      box-shadow:0 0 0 3px rgba(179,138,30,0.1);
-      background:white;
+
+    input:focus, textarea:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(179, 138, 30, 0.1);
+      background: white;
     }
+
     button {
-      background:linear-gradient(135deg,var(--primary),#d4af37);
-      color:white;
-      border:none;
-      padding:1.2rem 2rem;
-      border-radius:50px;
-      font-size:1.1rem;
-      font-weight:bold;
-      cursor:pointer;
-      transition:.3s;
-      margin-top:1rem;
+      background: linear-gradient(135deg, var(--primary), #d4af37);
+      color: white;
+      border: none;
+      padding: 1.2rem 2rem;
+      border-radius: 50px;
+      font-size: 1.1rem;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin-top: 1rem;
     }
+
     button:hover {
-      transform:translateY(-2px);
-      box-shadow:0 8px 25px rgba(179,138,30,0.3);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(179, 138, 30, 0.3);
     }
 
-    /* Footer */
+    /* 📞 Footer */
     footer {
-      background:var(--accent);
-      color:var(--secondary);
-      padding:3rem 0 2rem;
-      text-align:center;
+      background: var(--accent);
+      color: var(--secondary);
+      padding: 3rem 0 2rem;
+      text-align: center;
     }
+
     .footer-content {
-      display:flex;
-      flex-wrap:wrap;
-      gap:2rem;
-      justify-content:space-between;
-      margin-bottom:2rem;
-      text-align:left;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 2rem;
+      justify-content: space-between;
+      margin-bottom: 2rem;
+      text-align: left;
     }
+
     .footer-column {
-      flex:1;
-      min-width:250px;
+      flex: 1;
+      min-width: 250px;
     }
+
     .footer-column h3 {
-      color:var(--primary);
-      margin-bottom:1rem;
+      color: var(--primary);
+      margin-bottom: 1rem;
     }
+
     .footer-column ul {
-      list-style:none;
-      padding:0;
+      list-style: none;
+      padding: 0;
     }
+
     .footer-column ul li {
-      margin-bottom:0.5rem;
+      margin-bottom: 0.5rem;
     }
+
     .footer-column ul li a {
-      color:var(--secondary);
-      transition:color 0.3s ease;
+      color: var(--secondary);
+      transition: color 0.3s ease;
     }
+
     .footer-column ul li a:hover {
-      color:var(--primary);
+      color: var(--primary);
     }
+
     .social-links {
-      display:flex;
-      gap:1rem;
-      justify-content:center;
-      margin:1.5rem 0;
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      margin: 1.5rem 0;
     }
+
     .social-links a {
-      display:inline-flex;
-      align-items:center;
-      justify-content:center;
-      width:45px;
-      height:45px;
-      background:rgba(255,255,255,.1);
-      color:white;
-      border-radius:50%;
-      transition:.3s;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 45px;
+      height: 45px;
+      background: rgba(255, 255, 255, 0.1);
+      color: white;
+      border-radius: 50%;
+      transition: all 0.3s ease;
     }
+
     .social-links a:hover {
-      background:var(--primary);
-      transform:translateY(-3px);
+      background: var(--primary);
+      transform: translateY(-3px);
     }
+
     .copyright {
-      padding-top:2rem;
-      border-top:1px solid rgba(255,255,255,0.1);
-      color:#aaa;
-      font-size:.9rem;
+      padding-top: 2rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      color: #aaa;
+      font-size: 0.9rem;
     }
 
-    /* Admin link */
+    /* 🔗 Lien Admin */
     .admin-link {
-      position:fixed;
-      bottom:20px;
-      right:20px;
-      background:var(--primary);
-      color:white;
-      padding:10px 15px;
-      border-radius:25px;
-      text-decoration:none;
-      font-size:0.9rem;
-      z-index:1000;
-      box-shadow:0 4px 15px rgba(179,138,30,0.3);
-      transition:all 0.3s ease;
-      display:none;
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: var(--primary);
+      color: white;
+      padding: 10px 15px;
+      border-radius: 25px;
+      text-decoration: none;
+      font-size: 0.9rem;
+      z-index: 1000;
+      box-shadow: 0 4px 15px rgba(179, 138, 30, 0.3);
+      transition: all 0.3s ease;
+      display: none;
     }
+
     .admin-link:hover {
-      transform:translateY(-2px);
-      box-shadow:0 6px 20px rgba(179,138,30,0.4);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(179, 138, 30, 0.4);
     }
 
-    /* Scroll fade-in */
-    .fade-in {
-      opacity:0;
-      transform:translateY(30px);
-      transition:all 0.8s ease;
-    }
-    .fade-in.visible {
-      opacity:1;
-      transform:translateY(0);
-    }
-
-    /* Retour en haut */
+    /* ⬆️ Bouton retour en haut */
     #backToTop {
-      position:fixed;
-      bottom:80px;
-      right:20px;
-      background:var(--primary);
-      color:white;
-      padding:10px 15px;
-      border-radius:25px;
-      cursor:pointer;
-      display:none;
-      z-index:999;
-      transition:0.3s;
-      border:none;
-      font-size:1rem;
-    }
-    #backToTop:hover {
-      background:#d4af37;
-      transform:translateY(-2px);
+      position: fixed;
+      bottom: 80px;
+      right: 20px;
+      background: var(--primary);
+      color: white;
+      padding: 10px 15px;
+      border-radius: 25px;
+      cursor: pointer;
+      display: none;
+      z-index: 999;
+      transition: all 0.3s ease;
+      border: none;
+      font-size: 1rem;
     }
 
-    /* Responsive */
-    @media(max-width:768px){
-      .mobile-menu{display:block;}
-      nav ul{display:none;}
-      nav ul.show{display:flex;}
-      nav ul li{margin:0;text-align:center;padding:0.8rem 0;}
-      .hero-content h2{font-size:2.5rem;}
-      .hero-content p{font-size:1.1rem;}
-      .section{padding:3rem 0;}
-      .section h2{font-size:2rem;}
-      .news-grid,.playlist-grid{grid-template-columns:1fr;}
-      .footer-content{flex-direction:column;text-align:center;}
-      .admin-link{bottom:10px;right:10px;font-size:0.8rem;padding:8px 12px;}
-      #backToTop{bottom:70px;right:10px;}
+    #backToTop:hover {
+      background: #d4af37;
+      transform: translateY(-2px);
     }
-    @media(max-width:480px){
-      .hero-content h2{font-size:2rem;}
-      .btn{padding:12px 30px;font-size:1rem;}
+
+    /* ✨ Animation fade-in au scroll */
+    .fade-in {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: all 0.8s ease;
+    }
+
+    .fade-in.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* 📱 Responsive Design */
+    @media (max-width: 768px) {
+      .hero-content h2 {
+        font-size: 2.5rem;
+      }
+
+      .hero-content p {
+        font-size: 1.1rem;
+      }
+
+      .section {
+        padding: 3rem 0;
+      }
+
+      .section h2 {
+        font-size: 2rem;
+      }
+
+      .news-grid,
+      .playlist-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .footer-content {
+        flex-direction: column;
+        text-align: center;
+      }
+
+      .admin-link {
+        bottom: 10px;
+        right: 10px;
+        font-size: 0.8rem;
+        padding: 8px 12px;
+      }
+
+      #backToTop {
+        bottom: 70px;
+        right: 10px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .hero-content h2 {
+        font-size: 2rem;
+      }
+
+      .btn {
+        padding: 12px 30px;
+        font-size: 1rem;
+      }
     }
   </style>
 </head>
 <body>
 
-<a href="/cms.html" class="admin-link" id="adminLink"><i class="fas fa-cog"></i> Admin</a>
+  <!-- 🔗 Lien Admin (caché par défaut) -->
+  <a href="/cms.html" class="admin-link" id="adminLink">
+    <i class="fas fa-cog"></i> Admin
+  </a>
 
-<button id="backToTop" aria-label="Retour en haut"><i class="fas fa-arrow-up"></i></button>
+  <!-- ⬆️ Bouton retour en haut -->
+  <button id="backToTop" aria-label="Retour en haut">
+    <i class="fas fa-arrow-up"></i>
+  </button>
 
-<header id="main-header">
-  <div class="container header-container">
-    <img src="logo-kunbi.png" alt="Logo Kunbi TV" class="logo">
-    <div class="mobile-menu" aria-label="Menu mobile">☰</div>
-    <nav>
-      <ul>
-        <li><a href="#accueil">Accueil</a></li>
-        <li><a href="#actualites">Actualités</a></li>
-        <li><a href="#programmes">Nos Programmes</a></li>
-        <li><a href="#live">Web TV</a></li>
-        <li><a href="#contact">Contact</a></li>
-      </ul>
-    </nav>
-  </div>
-</header>
-
-<section id="accueil" class="hero">
-  <div class="galaxy-background" id="galaxy"></div>
-  <div class="hero-content">
-    <h2>L'expression partagée</h2>
-    <p>Kunbi TV — la voix des sans voix, la vitrine de la culture soninké et des peuples frères à travers le monde.</p>
-    <a href="#live" class="btn"><i class="fas fa-play-circle"></i> Regarder en direct</a>
-  </div>
-</section>
-
-<section id="actualites" class="section fade-in">
-  <div class="container">
-    <h2>Actualités</h2>
-    <div class="news-grid" id="newsGrid">
-      <div class="loading">
-        <div class="loading-spinner"></div>
-        <p>Chargement des actualités...</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<section id="programmes" class="section fade-in">
-  <div class="container">
-    <h2>Nos Programmes</h2>
-    <div class="playlist-grid">
-      <div class="playlist-card">
-        <h3>Information</h3>
-        <div class="playlist-embed">
-          <iframe loading="lazy" src="https://www.youtube.com/embed/videoseries?list=PLKFO7rykPHFWk0_T5fGnwI9r7y2n1-Yed" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-        </div>
-      </div>
-      <div class="playlist-card">
-        <h3>Kunbi Débat Express</h3>
-        <div class="playlist-embed">
-          <iframe loading="lazy" src="https://www.youtube.com/embed/videoseries?list=PLKFO7rykPHFVDvHLXdxzmNT2UsIroXWCr" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-        </div>
-      </div>
-      <div class="playlist-card">
-        <h3>Soninkara Dungre (Miroir de Soninkara)</h3>
-        <div class="playlist-embed">
-          <iframe loading="lazy" src="https://www.youtube.com/embed/videoseries?list=PLKFO7rykPHFXFC1Emfqi5p92EvjjVkqCz" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-        </div>
-      </div>
-      <div class="playlist-card">
-        <h3>Yaxaru Ndaaxa</h3>
-        <p style="color:var(--gray);font-size:0.9rem;margin-bottom:1rem;">Plateforme / abri des femmes</p>
-        <div class="playlist-embed">
-          <iframe loading="lazy" src="https://www.youtube.com/embed/videoseries?list=PLKFO7rykPHFX7Yfy5gVuM3uPSFnqM16tA" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-        </div>
-      </div>
-      <div class="playlist-card">
-        <h3>Éducation</h3>
-        <div class="playlist-embed">
-          <iframe loading="lazy" src="https://www.youtube.com/embed/videoseries?list=PLKFO7rykPHFUcGx74e1GFXFYtu3GVt0sY" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-        </div>
-      </div>
-      <div class="playlist-card">
-        <h3>Culture</h3>
-        <div class="playlist-embed">
-          <iframe loading="lazy" src="https://www.youtube.com/embed/videoseries?list=PLKFO7rykPHFW7YXnaK7Hr-f3uEqXEr8Mg" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-        </div>
-      </div>
-      <div class="playlist-card">
-        <h3>Émissions Spéciales</h3>
-        <div class="playlist-embed">
-          <iframe loading="lazy" src="https://www.youtube.com/embed/videoseries?list=PLKFO7rykPHFUa2uI0Kv-G8kdH3gl57LCT" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<section id="live" class="section live-section fade-in">
-  <div class="container">
-    <h2>Web TV / Radio</h2>
-    <span class="live-indicator">LIVE</span>
-    <p>Regardez Kunbi TV en direct :</p>
-    <div class="video-container">
-      <video id="video" controls poster="https://via.placeholder.com/800x450/333/fff?text=Kunbi+TV+En+Direct">
-        Votre navigateur ne supporte pas la lecture vidéo.
-      </video>
-    </div>
-  </div>
-</section>
-
-<section id="contact" class="section fade-in">
-  <div class="container">
-    <h2>Contactez-nous</h2>
-    <form id="contactForm">
-      <input type="text" name="name" placeholder="Votre nom" required>
-      <input type="email" name="email" placeholder="Votre email" required>
-      <textarea name="message" placeholder="Votre message" rows="5" required></textarea>
-      <button type="submit">Envoyer le message</button>
-    </form>
-  </div>
-</section>
-
-<footer>
-  <div class="container">
-    <div class="footer-content">
-      <div class="footer-column">
-        <h3>Kunbi TV</h3>
-        <p>La voix des sans voix, la vitrine de la culture soninké et des peuples frères à travers le monde.</p>
-      </div>
-      <div class="footer-column">
-        <h3>Liens utiles</h3>
+  <!-- 🟡 Header -->
+  <header id="main-header">
+    <div class="container header-container">
+      <img src="logo-kunbi.png" alt="Logo Kunbi TV" class="logo">
+      <div class="mobile-menu" aria-label="Menu mobile">☰</div>
+      <nav>
         <ul>
           <li><a href="#accueil">Accueil</a></li>
           <li><a href="#actualites">Actualités</a></li>
-          <li><a href="#programmes">Programmes</a></li>
+          <li><a href="#programmes">Nos Programmes</a></li>
           <li><a href="#live">Web TV</a></li>
+          <li><a href="#contact">Contact</a></li>
         </ul>
+      </nav>
+    </div>
+  </header>
+
+  <!-- 🌍 Section Hero -->
+  <section id="accueil" class="hero">
+    <div class="galaxy-background" id="galaxy"></div>
+    <div class="hero-content">
+      <h2>L'expression partagée</h2>
+      <p>Kunbi TV — la voix des sans voix, la vitrine de la culture soninké et des peuples frères à travers le monde.</p>
+      <a href="#live" class="btn">
+        <i class="fas fa-play-circle"></i> Regarder en direct
+      </a>
+    </div>
+  </section>
+
+  <!-- 📰 Section Actualités -->
+  <section id="actualites" class="section fade-in">
+    <div class="container">
+      <h2>Actualités</h2>
+      <div class="news-grid" id="newsGrid">
+        <div class="loading">
+          <div class="loading-spinner"></div>
+          <p>Chargement des actualités...</p>
+        </div>
       </div>
-      <div class="footer-column">
-        <h3>Contact</h3>
-        <p>Email: contact@kunbitv.com</p>
-        <p>Téléphone: +33 1 23 45 67 89</p>
-      </div>
     </div>
-    
-    <div class="social-links">
-      <a href="https://facebook.com/kunbitv" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
-      <a href="https://youtube.com/@kunbitv" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
-      <a href="https://twitter.com/kunbitv" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
-      <a href="https://instagram.com/kunbitv" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
-    </div>
-    
-    <div class="copyright">
-      © 2025 Kunbi TV. Tous droits réservés.
-    </div>
-  </div>
-</footer>
+  </section>
 
-<script>
-  // Configuration Supabase
-  const supabaseUrl = 'https://pjdozdmwevdezfzgltlc.supabase.co';
-  const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBqZG96ZG13ZXZkZXpmemdsdGxjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjAwNzYyNDcsImV4cCI6MjA3NTY1MjI0N30.inXUrg_fWIRLagOnSFkRc8HxbrRD5OitBymNntrXfWQ';
-  const supabase = supabase.createClient(supabaseUrl, supabaseKey);
-
-  // Mobile menu
-  const mobileMenu = document.querySelector('.mobile-menu');
-  const navUl = document.querySelector('nav ul');
-  mobileMenu.addEventListener('click', () => {
-    navUl.classList.toggle('show');
-    mobileMenu.textContent = navUl.classList.contains('show') ? '✕' : '☰';
-  });
-
-  // Header scroll
-  const header = document.getElementById('main-header');
-  window.addEventListener('scroll', () => {
-    header.classList.toggle('scrolled', window.scrollY > 50);
-  });
-
-  // Back to top
-  const backToTop = document.getElementById('backToTop');
-  window.addEventListener('scroll', () => {
-    backToTop.style.display = window.scrollY > 400 ? 'block' : 'none';
-  });
-  backToTop.addEventListener('click', () => {
-    window.scrollTo({top: 0, behavior: 'smooth'});
-  });
-
-  // Fade-in animation
-  const faders = document.querySelectorAll('.fade-in');
-  const appearOptions = {threshold: 0.2, rootMargin: "0px 0px -50px 0px"};
-  const appearOnScroll = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add('visible');
-        appearOnScroll.unobserve(entry.target);
-      }
-    });
-  }, appearOptions);
-  faders.forEach(fader => appearOnScroll.observe(fader));
-
-  // Stars background amélioré
-  const galaxy = document.getElementById('galaxy');
-  function createStar(size) {
-    const star = document.createElement('div');
-    star.className = 'star ' + size;
-    star.style.top = Math.random() * 100 + '%';
-    star.style.left = Math.random() * 100 + '%';
-    star.style.animationDuration = (2 + Math.random() * 3) + 's';
-    star.style.animationDelay = Math.random() * 5 + 's';
-    galaxy.appendChild(star);
-  }
-
-  // Créer plus d'étoiles pour un effet plus riche
-  for(let i = 0; i < 150; i++) createStar('small');
-  for(let i = 0; i < 75; i++) createStar('medium');
-  for(let i = 0; i < 35; i++) createStar('large');
-
-  // Shooting stars amélioré
-  function shootStar() {
-    const s = document.createElement('div');
-    s.className = 'shooting-star';
-    s.style.top = Math.random() * 50 + '%';
-    s.style.left = '-100px';
-    s.style.animationDelay = Math.random() * 2 + 's';
-    galaxy.appendChild(s);
-    setTimeout(() => {
-      if (s.parentNode) galaxy.removeChild(s);
-    }, 6000);
-  }
-  setInterval(shootStar, 3000);
-  // Créer quelques étoiles filantes initiales
-  for(let i = 0; i < 3; i++) {
-    setTimeout(shootStar, i * 1000);
-  }
-
-  // Admin link selon session
-  const adminLink = document.getElementById('adminLink');
-  if(localStorage.getItem('kunbi_admin') === 'true') {
-    adminLink.style.display = 'block';
-  }
-
-  // Charger les actualités depuis Supabase
-  const newsGrid = document.getElementById('newsGrid');
-  async function loadActualites() {
-    try {
-      const { data: actualites, error } = await supabase
-        .from('actualites')
-        .select('*')
-        .order('created_at', { ascending: false })
-        .limit(6);
-
-      if (error) throw error;
-
-      if (!actualites || actualites.length === 0) {
-        newsGrid.innerHTML = `
-          <div style="grid-column: 1 / -1; text-align: center; padding: 3rem; color: var(--gray);">
-            <i class="fas fa-newspaper" style="font-size: 3rem; margin-bottom: 1rem; opacity: 0.5;"></i>
-            <h3>Aucune actualité pour le moment</h3>
-            <p>Revenez bientôt pour découvrir nos dernières nouvelles</p>
+  <!-- 🎬 Section Programmes -->
+  <section id="programmes" class="section fade-in">
+    <div class="container">
+      <h2>Nos Programmes</h2>
+      <div class="playlist-grid">
+        <div class="playlist-card">
+          <h3>Information</h3>
+          <div class="playlist-embed">
+            <iframe 
+              loading="lazy" 
+              src="https://www.youtube.com/embed/videoseries?list=PLKFO7rykPHFWk0_T5fGnwI9r7y2n1-Yed" 
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+              allowfullscreen>
+            </iframe>
           </div>
-        `;
-        return;
-      }
+        </div>
 
-      newsGrid.innerHTML = actualites.map(item => {
-        const isVideo = item.media && (item.media.includes('.mp4') || item.media.includes('.mov') || item.media.includes('.webm'));
-        const mediaElement = isVideo 
-          ? `<video muted loop playsinline><source src="${item.media}" type="video/mp4"></video>`
-          : `<img loading="lazy" src="${item.media || 'https://via.placeholder.com/400x200/333/fff?text=Kunbi+TV'}" alt="${item.titre}">`;
+        <div class="playlist-card">
+          <h3>Kunbi Débat Express</h3>
+          <div class="playlist-embed">
+            <iframe 
+              loading="lazy" 
+              src="https://www.youtube.com/embed/videoseries?list=PLKFO7rykPHFVDvHLXdxzmNT2UsIroXWCr" 
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+              allowfullscreen>
+            </iframe>
+          </div>
+        </div>
+
+        <div class="playlist-card">
+          <h3>Soninkara Dungre (Miroir de Soninkara)</h3>
+          <div class="playlist-embed">
+            <iframe 
+              loading="lazy" 
+              src="https://www.youtube.com/embed/videoseries?list=PLKFO7rykPHFXFC1Emfqi5p92EvjjVkqCz" 
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+              allowfullscreen>
+            </iframe>
+          </div>
+        </div>
+
+        <div class="playlist-card">
+          <h3>Yaxaru Ndaaxa</h3>
+          <p style="color: var(--gray); font-size: 0.9rem; margin-bottom: 1rem;">Plateforme / abri des femmes</p>
+          <div class="playlist-embed">
+            <iframe 
+              loading="lazy" 
+              src="https://www.youtube.com/embed/videoseries?list=PLKFO7rykPHFX7Yfy5gVuM3uPSFnqM16tA" 
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+              allowfullscreen>
+            </iframe>
+          </div>
+        </div>
+
+        <div class="playlist-card">
+          <h3>Éducation</h3>
+          <div class="playlist-embed">
+            <iframe 
+              loading="lazy" 
+              src="https://www.youtube.com/embed/videoseries?list=PLKFO7rykPHFUcGx74e1GFXFYtu3GVt0sY" 
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+              allowfullscreen>
+            </iframe>
+          </div>
+        </div>
+
+        <div class="playlist-card">
+          <h3>Culture</h3>
+          <div class="playlist-embed">
+            <iframe 
+              loading="lazy" 
+              src="https://www.youtube.com/embed/videoseries?list=PLKFO7rykPHFW7YXnaK7Hr-f3uEqXEr8Mg" 
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+              allowfullscreen>
+            </iframe>
+          </div>
+        </div>
+
+        <div class="playlist-card">
+          <h3>Émissions Spéciales</h3>
+          <div class="playlist-embed">
+            <iframe 
+              loading="lazy" 
+              src="https://www.youtube.com/embed/videoseries?list=PLKFO7rykPHFUa2uI0Kv-G8kdH3gl57LCT" 
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+              allowfullscreen>
+            </iframe>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 📡 Section Web TV -->
+  <section id="live" class="section live-section fade-in">
+    <div class="container">
+      <h2>Web TV / Radio</h2>
+      <span class="live-indicator">LIVE</span>
+      <p>Regardez Kunbi TV en direct :</p>
+      <div class="video-container">
+        <video id="video" controls poster="https://via.placeholder.com/800x450/333/fff?text=Kunbi+TV+En+Direct">
+          Votre navigateur ne supporte pas la lecture vidéo.
+        </video>
+      </div>
+    </div>
+  </section>
+
+  <!-- 📞 Section Contact -->
+  <section id="contact" class="section fade-in">
+    <div class="container">
+      <h2>Contactez-nous</h2>
+      <form id="contactForm">
+        <input type="text" name="name" placeholder="Votre nom" required>
+        <input type="email" name="email" placeholder="Votre email" required>
+        <textarea name="message" placeholder="Votre message" rows="5" required></textarea>
+        <button type="submit">Envoyer le message</button>
+      </form>
+    </div>
+  </section>
+
+  <!-- 📞 Footer -->
+  <footer>
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-column">
+          <h3>Kunbi TV</h3>
+          <p>La voix des sans voix, la vitrine de la culture soninké et des peuples frères à travers le monde.</p>
+        </div>
         
-        const date = new Date(item.created_at).toLocaleDateString('fr-FR', {
-          year: 'numeric',
-          month: 'long',
-          day: 'numeric'
+        <div class="footer-column">
+          <h3>Liens utiles</h3>
+          <ul>
+            <li><a href="#accueil">Accueil</a></li>
+            <li><a href="#actualites">Actualités</a></li>
+            <li><a href="#programmes">Programmes</a></li>
+            <li><a href="#live">Web TV</a></li>
+          </ul>
+        </div>
+        
+        <div class="footer-column">
+          <h3>Contact</h3>
+          <p>Email: contact@kunbitv.com</p>
+          <p>Téléphone: +33 1 23 45 67 89</p>
+        </div>
+      </div>
+      
+      <div class="social-links">
+        <a href="https://facebook.com/kunbitv" aria-label="Facebook">
+          <i class="fab fa-facebook-f"></i>
+        </a>
+        <a href="https://youtube.com/@kunbitv" aria-label="YouTube">
+          <i class="fab fa-youtube"></i>
+        </a>
+        <a href="https://twitter.com/kunbitv" aria-label="Twitter">
+          <i class="fab fa-twitter"></i>
+        </a>
+        <a href="https://instagram.com/kunbitv" aria-label="Instagram">
+          <i class="fab fa-instagram"></i>
+        </a>
+      </div>
+      
+      <div class="copyright">
+        © 2025 Kunbi TV. Tous droits réservés.
+      </div>
+    </div>
+  </footer>
+
+  <!-- 🚀 JavaScript -->
+  <script>
+    // Configuration Supabase
+    const supabaseUrl = 'https://pjdozdmwevdezfzgltlc.supabase.co';
+    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBqZG96ZG13ZXZkZXpmemdsdGxjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjAwNzYyNDcsImV4cCI6MjA3NTY1MjI0N30.inXUrg_fWIRLagOnSFkRc8HxbrRD5OitBymNntrXfWQ';
+    const supabase = supabase.createClient(supabaseUrl, supabaseKey);
+
+    // 📱 Menu Mobile
+    const mobileMenu = document.querySelector('.mobile-menu');
+    const navUl = document.querySelector('nav ul');
+    
+    mobileMenu.addEventListener('click', () => {
+      navUl.classList.toggle('show');
+      mobileMenu.textContent = navUl.classList.contains('show') ? '✕' : '☰';
+    });
+
+    // Fermer le menu en cliquant sur un lien
+    document.querySelectorAll('nav ul li a').forEach(link => {
+      link.addEventListener('click', () => {
+        navUl.classList.remove('show');
+        mobileMenu.textContent = '☰';
+      });
+    });
+
+    // 🎯 Header au scroll
+    const header = document.getElementById('main-header');
+    window.addEventListener('scroll', () => {
+      header.classList.toggle('scrolled', window.scrollY > 50);
+    });
+
+    // ⬆️ Bouton retour en haut
+    const backToTop = document.getElementById('backToTop');
+    window.addEventListener('scroll', () => {
+      backToTop.style.display = window.scrollY > 400 ? 'block' : 'none';
+    });
+    
+    backToTop.addEventListener('click', () => {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+
+    // ✨ Animation fade-in au scroll
+    const faders = document.querySelectorAll('.fade-in');
+    const appearOptions = {
+      threshold: 0.2,
+      rootMargin: "0px 0px -50px 0px"
+    };
+
+    const appearOnScroll = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          appearOnScroll.unobserve(entry.target);
+        }
+      });
+    }, appearOptions);
+
+    faders.forEach(fader => appearOnScroll.observe(fader));
+
+    // 🌌 Animation Galaxie
+    const galaxy = document.getElementById('galaxy');
+    
+    function createStar(size) {
+      const star = document.createElement('div');
+      star.className = 'star ' + size;
+      star.style.top = Math.random() * 100 + '%';
+      star.style.left = Math.random() * 100 + '%';
+      star.style.animationDuration = (2 + Math.random() * 3) + 's';
+      star.style.animationDelay = Math.random() * 5 + 's';
+      galaxy.appendChild(star);
+    }
+
+    // Créer les étoiles
+    for(let i = 0; i < 150; i++) createStar('small');
+    for(let i = 0; i < 75; i++) createStar('medium');
+    for(let i = 0; i < 35; i++) createStar('large');
+
+    // 🌠 Étoiles filantes
+    function shootStar() {
+      const shootingStar = document.createElement('div');
+      shootingStar.className = 'shooting-star';
+      shootingStar.style.top = Math.random() * 50 + '%';
+      shootingStar.style.left = '-100px';
+      shootingStar.style.animationDelay = Math.random() * 2 + 's';
+      galaxy.appendChild(shootingStar);
+      
+      setTimeout(() => {
+        if (shootingStar.parentNode) {
+          galaxy.removeChild(shootingStar);
+        }
+      }, 6000);
+    }
+
+    setInterval(shootStar, 3000);
+    
+    // Créer quelques étoiles filantes initiales
+    for(let i = 0; i < 3; i++) {
+      setTimeout(shootStar, i * 1000);
+    }
+
+    // 🔗 Lien Admin conditionnel
+    const adminLink = document.getElementById('adminLink');
+    if(localStorage.getItem('kunbi_admin') === 'true') {
+      adminLink.style.display = 'block';
+    }
+
+    // 📰 Chargement des actualités depuis Supabase
+    const newsGrid = document.getElementById('newsGrid');
+    
+    async function loadActualites() {
+      try {
+        const { data: actualites, error } = await supabase
+          .from('actualites')
+          .select('*')
+          .order('created_at', { ascending: false })
+          .limit(6);
+
+        if (error) throw error;
+
+        if (!actualites || actualites.length === 0) {
+          newsGrid.innerHTML = `
+            <div style="grid-column: 1 / -1; text-align: center; padding: 3rem; color: var(--gray);">
+              <i class="fas fa-newspaper" style="font-size: 3rem; margin-bottom: 1rem; opacity: 0.5;"></i>
+              <h3>Aucune actualité pour le moment</h3>
+              <p>Revenez bientôt pour découvrir nos dernières nouvelles</p>
+            </div>
+          `;
+          return;
+        }
+
+        newsGrid.innerHTML = actualites.map(item => {
+          const isVideo = item.media && (
+            item.media.includes('.mp4') || 
+            item.media.includes('.mov') || 
+            item.media.includes('.webm')
+          );
+          
+          const mediaElement = isVideo 
+            ? `<video muted loop playsinline><source src="${item.media}" type="video/mp4"></video>`
+            : `<img loading="lazy" src="${item.media || 'https://via.placeholder.com/400x200/333/fff?text=Kunbi+TV'}" alt="${item.titre}">`;
+          
+          const date = new Date(item.created_at).toLocaleDateString('fr-FR', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+          });
+
+          const cardContent = `
+            ${mediaElement}
+            <div class="news-card-content">
+              <h3>${item.titre}</h3>
+              <p>${item.resume}</p>
+              ${item.lien ? `<a href="${item.lien}" target="_blank">Lire plus</a>` : ''}
+              <div class="news-date">${date}</div>
+            </div>
+          `;
+
+          // Si un lien est fourni, rendre toute la carte cliquable
+          if (item.lien) {
+            return `<a href="${item.lien}" target="_blank" class="news-card fade-in">${cardContent}</a>`;
+          } else {
+            return `<div class="news-card fade-in">${cardContent}</div>`;
+          }
+        }).join('');
+
+        // Réobserver les nouvelles cartes pour l'animation
+        document.querySelectorAll('#newsGrid .fade-in').forEach(card => {
+          appearOnScroll.observe(card);
         });
 
-        const cardContent = `
-          ${mediaElement}
-          <div class="news-card-content">
-            <h3>${item.titre}</h3>
-            <p>${item.resume}</p>
-            ${item.lien ? `<a href="${item.lien}" target="_blank">Lire plus</a>` : ''}
-            <div class="news-date">${date}</div>
+      } catch (error) {
+        console.error('Erreur lors du chargement des actualités:', error);
+        newsGrid.innerHTML = `
+          <div style="grid-column: 1 / -1; text-align: center; padding: 3rem; color: #dc3545;">
+            <i class="fas fa-exclamation-triangle" style="font-size: 3rem; margin-bottom: 1rem;"></i>
+            <h3>Erreur de chargement</h3>
+            <p>Impossible de charger les actualités. Veuillez réessayer plus tard.</p>
           </div>
         `;
-
-        // Si un lien est fourni, rendre toute la carte cliquable
-        if (item.lien) {
-          return `<a href="${item.lien}" target="_blank" class="news-card fade-in">${cardContent}</a>`;
-        } else {
-          return `<div class="news-card fade-in">${cardContent}</div>`;
-        }
-      }).join('');
-
-      // Réobserver les nouvelles cartes pour l'animation
-      document.querySelectorAll('#newsGrid .fade-in').forEach(card => {
-        appearOnScroll.observe(card);
-      });
-
-    } catch (error) {
-      console.error('Erreur lors du chargement des actualités:', error);
-      newsGrid.innerHTML = `
-        <div style="grid-column: 1 / -1; text-align: center; padding: 3rem; color: #dc3545;">
-          <i class="fas fa-exclamation-triangle" style="font-size: 3rem; margin-bottom: 1rem;"></i>
-          <h3>Erreur de chargement</h3>
-          <p>Impossible de charger les actualités. Veuillez réessayer plus tard.</p>
-        </div>
-      `;
+      }
     }
-  }
 
-  // Initialiser le lecteur vidéo
-  const video = document.getElementById('video');
-  const videoSrc = 'https://livestream.kgsols.com/push/Kunbitv/playlist.m3u8';
-  
-  function initializeVideoPlayer() {
-    if (Hls.isSupported()) {
-      const hls = new Hls();
-      hls.loadSource(videoSrc);
-      hls.attachMedia(video);
-      hls.on(Hls.Events.MANIFEST_PARSED, function() {
-        console.log('Video player initialized successfully');
-      });
-    } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
-      video.src = videoSrc;
-    } else {
-      console.error('HLS is not supported in this browser');
-      video.innerHTML = '<p>Votre navigateur ne supporte pas la lecture de flux en direct. Veuillez utiliser un navigateur moderne.</p>';
+    // 📹 Lecteur vidéo HLS
+    const video = document.getElementById('video');
+    const videoSrc = 'https://livestream.kgsols.com/push/Kunbitv/playlist.m3u8';
+    
+    function initializeVideoPlayer() {
+      if (Hls.isSupported()) {
+        const hls = new Hls();
+        hls.loadSource(videoSrc);
+        hls.attachMedia(video);
+        hls.on(Hls.Events.MANIFEST_PARSED, function() {
+          console.log('Lecteur vidéo initialisé avec succès');
+        });
+      } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+        video.src = videoSrc;
+      } else {
+        console.error('HLS non supporté par ce navigateur');
+        video.innerHTML = '<p>Votre navigateur ne supporte pas la lecture de flux en direct. Veuillez utiliser un navigateur moderne.</p>';
+      }
     }
-  }
 
-  // Contact form
-  const form = document.getElementById('contactForm');
-  form.addEventListener('submit', e => {
-    e.preventDefault();
-    
-    const submitButton = form.querySelector('button[type="submit"]');
-    const originalText = submitButton.innerHTML;
-    
-    // Simulation d'envoi
-    submitButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Envoi en cours...';
-    submitButton.disabled = true;
-    
-    setTimeout(() => {
-      alert('Merci pour votre message ! Nous vous répondrons dans les plus brefs délais.');
-      form.reset();
-      submitButton.innerHTML = originalText;
-      submitButton.disabled = false;
-    }, 2000);
-  });
+    // 📧 Formulaire de contact
+    const form = document.getElementById('contactForm');
+    form.addEventListener('submit', e => {
+      e.preventDefault();
+      
+      const submitButton = form.querySelector('button[type="submit"]');
+      const originalText = submitButton.innerHTML;
+      
+      // Simulation d'envoi
+      submitButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Envoi en cours...';
+      submitButton.disabled = true;
+      
+      setTimeout(() => {
+        alert('Merci pour votre message ! Nous vous répondrons dans les plus brefs délais.');
+        form.reset();
+        submitButton.innerHTML = originalText;
+        submitButton.disabled = false;
+      }, 2000);
+    });
 
-  // Initialisation
-  document.addEventListener('DOMContentLoaded', function() {
-    loadActualites();
-    initializeVideoPlayer();
-  });
-
-  // Charger HLS.js dynamiquement si nécessaire
-  if (typeof Hls === 'undefined') {
-    const script = document.createElement('script');
-    script.src = 'https://cdn.jsdelivr.net/npm/hls.js@latest';
-    script.onload = initializeVideoPlayer;
-    document.head.appendChild(script);
-  }
-</script>
+    // 🚀 Initialisation au chargement
+    document.addEventListener('DOMContentLoaded', function() {
+      loadActualites();
+      initializeVideoPlayer();
+    });
+  </script>
 </body>
 </html>
