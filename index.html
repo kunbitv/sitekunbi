@@ -377,28 +377,98 @@
     </div>
   </footer>
 
-  <!-- 🎥 HLS.js -->
-  <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
-  <script>
-    // Animation galaxie
-    function createGalaxy() {
-      const galaxy = document.getElementById('galaxy');
-      for (let i = 0; i < 200; i++) {
-        const star = document.createElement('div');
-        star.className = `star ${['small','medium','large'][Math.floor(Math.random()*3)]}`;
-        star.style.left = `${Math.random()*100}%`;
-        star.style.top = `${Math.random()*100}%`;
-        star.style.animationDuration = `${2+Math.random()*4}s`;
-        galaxy.appendChild(star);
-      }
-      for (let i=0;i<5;i++){
-        const s=document.createElement('div');
-        s.className='shooting-star';
-        s.style.left=`${Math.random()*20}%`;
-        s.style.top=`${Math.random()*20}%`;
-        galaxy.appendChild(s);
-      }
+  <!-- 🎥 HLS.js et Supabase -->
+<script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+  // 🔧 Configuration Supabase
+  const SUPABASE_URL = 'https://xxxx.supabase.co'; // 🔁 remplace par ton URL
+  const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIs...'; // 🔁 remplace par ta clé anonyme publique
+  const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+  // 🌌 Animation galaxie
+  function createGalaxy() {
+    const galaxy = document.getElementById('galaxy');
+    for (let i = 0; i < 200; i++) {
+      const star = document.createElement('div');
+      star.className = `star ${['small', 'medium', 'large'][Math.floor(Math.random() * 3)]}`;
+      star.style.left = `${Math.random() * 100}%`;
+      star.style.top = `${Math.random() * 100}%`;
+      star.style.animationDuration = `${2 + Math.random() * 4}s`;
+      galaxy.appendChild(star);
     }
+    for (let i = 0; i < 5; i++) {
+      const s = document.createElement('div');
+      s.className = 'shooting-star';
+      s.style.left = `${Math.random() * 20}%`;
+      s.style.top = `${Math.random() * 20}%`;
+      galaxy.appendChild(s);
+    }
+  }
+
+  // 📺 Lecture live TV
+  const video = document.getElementById('video');
+  const videoSrc = 'https://livestream.kgsols.com/push/Kunbitv/playlist.m3u8';
+  if (Hls.isSupported()) {
+    const hls = new Hls();
+    hls.loadSource(videoSrc);
+    hls.attachMedia(video);
+  } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+    video.src = videoSrc;
+  }
+
+  // 📱 Menu mobile
+  document.querySelector('.mobile-menu').addEventListener('click', () => {
+    document.querySelector('nav ul').classList.toggle('show');
+  });
+
+  // ✉️ Formulaire contact
+  document.getElementById('contact-form').addEventListener('submit', e => {
+    e.preventDefault();
+    alert('Merci pour votre message !');
+    e.target.reset();
+  });
+
+  // 📰 Chargement des actualités depuis Supabase
+  async function loadActualites() {
+    const container = document.querySelector('.news-grid');
+    container.innerHTML = '<p style="text-align:center;">⏳ Chargement des actualités...</p>';
+
+    const { data, error } = await supabase
+      .from('actualites')
+      .select('*')
+      .order('created_at', { ascending: false });
+
+    if (error) {
+      container.innerHTML = '<p style="color:red;">Erreur de chargement des actualités.</p>';
+      console.error(error);
+      return;
+    }
+
+    if (!data || data.length === 0) {
+      container.innerHTML = '<p style="text-align:center;">Aucune actualité disponible pour le moment.</p>';
+      return;
+    }
+
+    container.innerHTML = data.map(item => `
+      <div class="news-card">
+        ${item.media?.endsWith('.mp4')
+          ? `<video controls width="100%" height="200"><source src="${item.media}" type="video/mp4"></video>`
+          : `<img src="${item.media}" alt="${item.titre}">`}
+        <div class="news-card-content">
+          <h3>${item.titre}</h3>
+          <p>${item.resume || ''}</p>
+          ${item.lien ? `<p><a href="${item.lien}" target="_blank" style="color:var(--primary);font-weight:bold;">Lire plus →</a></p>` : ''}
+        </div>
+      </div>
+    `).join('');
+  }
+
+  // 🚀 Lancement initial
+  createGalaxy();
+  loadActualites();
+</script>
+
 
     // Vidéo live
     const video=document.getElementById('video');
@@ -420,3 +490,4 @@
   </script>
 </body>
 </html>
+
