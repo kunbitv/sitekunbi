@@ -357,6 +357,42 @@
     e.target.reset();
     loadNews();
   });
+  <!-- Login Protection -->
+<div id="loginOverlay" class="login-overlay">
+  <div class="login-form">
+    <h2>🔒 Accès Administrateur</h2>
+    <p style="margin-bottom: 1.5rem; color: var(--gray);">Veuillez entrer le mot de passe pour accéder au CMS</p>
+    <input type="password" id="passwordInput" placeholder="Mot de passe" style="width: 100%; margin-bottom: 1rem;">
+    <button onclick="checkPassword()" style="width: 100%;">
+      <i class="fas fa-unlock"></i> Accéder
+    </button>
+  </div>
+</div>
+
+
+  // 🔐 Mot de passe administrateur
+  const CORRECT_PASSWORD = "kunbi2025"; // <--- Tu peux changer ici si besoin
+
+  function checkPassword() {
+    const input = document.getElementById("passwordInput").value.trim();
+    if (input === CORRECT_PASSWORD) {
+      localStorage.setItem("kunbi_admin", "true");
+      document.getElementById("loginOverlay").style.display = "none";
+      alert("✅ Accès autorisé. Bienvenue dans le CMS Kunbi TV !");
+      loadNews();
+    } else {
+      alert("❌ Mot de passe incorrect !");
+    }
+  }
+
+  document.addEventListener("DOMContentLoaded", () => {
+    if (localStorage.getItem("kunbi_admin") === "true") {
+      document.getElementById("loginOverlay").style.display = "none";
+      loadNews();
+    }
+  });
+
+
 </script>
 
 </body>
