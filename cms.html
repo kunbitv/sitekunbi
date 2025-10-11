@@ -6,6 +6,7 @@
   <title>CMS Kunbi TV - Administration</title>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
   <style>
     :root {
@@ -13,6 +14,8 @@
       --secondary: #E0E0E0;
       --dark: #111;
       --gray: #6C757D;
+      --danger: #dc3545;
+      --success: #28a745;
     }
 
     * {
@@ -81,6 +84,7 @@
       background: rgba(255, 255, 255, 0.05);
       color: var(--secondary);
       font-size: 1rem;
+      font-family: 'Poppins', sans-serif;
     }
 
     input:focus, textarea:focus, select:focus {
@@ -98,11 +102,17 @@
       font-weight: bold;
       cursor: pointer;
       transition: 0.3s;
+      font-family: 'Poppins', sans-serif;
     }
 
     button:hover {
       transform: translateY(-2px);
       box-shadow: 0 8px 25px rgba(179, 138, 30, 0.4);
+    }
+
+    .news-list {
+      display: grid;
+      gap: 1.5rem;
     }
 
     .news-item {
@@ -125,6 +135,7 @@
       height: 80px;
       overflow: hidden;
       border-radius: 10px;
+      flex-shrink: 0;
     }
 
     .news-media img, .news-media video {
@@ -133,14 +144,29 @@
       object-fit: cover;
     }
 
+    .news-content {
+      flex: 1;
+    }
+
     .news-content h3 {
       color: var(--primary);
+      margin-bottom: 0.5rem;
+    }
+
+    .news-content p {
+      margin-bottom: 0.5rem;
+      line-height: 1.4;
+    }
+
+    .news-content small {
+      color: var(--gray);
     }
 
     .news-actions {
       display: flex;
       flex-direction: column;
       gap: 0.5rem;
+      flex-shrink: 0;
     }
 
     .btn-edit, .btn-delete {
@@ -148,6 +174,8 @@
       border: none;
       border-radius: 8px;
       cursor: pointer;
+      font-family: 'Poppins', sans-serif;
+      transition: 0.3s;
     }
 
     .btn-edit {
@@ -155,9 +183,17 @@
       color: var(--primary);
     }
 
+    .btn-edit:hover {
+      background: rgba(179, 138, 30, 0.4);
+    }
+
     .btn-delete {
       background: rgba(220, 53, 69, 0.2);
-      color: #dc3545;
+      color: var(--danger);
+    }
+
+    .btn-delete:hover {
+      background: rgba(220, 53, 69, 0.4);
     }
 
     .login-overlay {
@@ -181,9 +217,55 @@
       width: 90%;
     }
 
+    .login-form input {
+      margin-bottom: 1.5rem;
+    }
+
+    .status-message {
+      padding: 1rem;
+      border-radius: 12px;
+      margin-bottom: 1.5rem;
+      text-align: center;
+      font-weight: 500;
+    }
+
+    .status-success {
+      background: rgba(40, 167, 69, 0.2);
+      color: var(--success);
+      border: 1px solid rgba(40, 167, 69, 0.3);
+    }
+
+    .status-error {
+      background: rgba(220, 53, 69, 0.2);
+      color: var(--danger);
+      border: 1px solid rgba(220, 53, 69, 0.3);
+    }
+
+    .status-info {
+      background: rgba(23, 162, 184, 0.2);
+      color: #17a2b8;
+      border: 1px solid rgba(23, 162, 184, 0.3);
+    }
+
+    .loading {
+      text-align: center;
+      padding: 2rem;
+      color: var(--primary);
+    }
+
     @media (max-width: 768px) {
-      .news-item { flex-direction: column; text-align: center; }
-      .news-media { width: 100%; height: 200px; }
+      .news-item { 
+        flex-direction: column; 
+        text-align: center; 
+      }
+      .news-media { 
+        width: 100%; 
+        height: 200px; 
+      }
+      .news-actions {
+        flex-direction: row;
+        justify-content: center;
+      }
     }
   </style>
 </head>
@@ -193,9 +275,9 @@
 <!-- 🔒 Écran de connexion -->
 <div id="loginOverlay" class="login-overlay">
   <div class="login-form">
-    <h2>🔒 Accès Administrateur</h2>
+    <h2><i class="fas fa-lock"></i> Accès Administrateur</h2>
     <p style="margin-bottom: 1.5rem; color: var(--gray);">Veuillez entrer le mot de passe pour accéder au CMS</p>
-    <input type="password" id="passwordInput" placeholder="Mot de passe">
+    <input type="password" id="passwordInput" placeholder="Mot de passe" autocomplete="current-password">
     <button onclick="checkPassword()" style="width:100%;">
       <i class="fas fa-unlock"></i> Accéder
     </button>
@@ -217,7 +299,7 @@
       <input type="text" id="titre" required>
 
       <label for="resume">Résumé</label>
-      <textarea id="resume" required></textarea>
+      <textarea id="resume" required rows="4"></textarea>
 
       <label for="fichier">Image ou Vidéo</label>
       <input type="file" id="fichier" accept="image/*,video/*" required>
@@ -255,21 +337,41 @@
   const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBqZG96ZG13ZXZkZXpmemdsdGxjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjAwNzYyNDcsImV4cCI6MjA3NTY1MjI0N30.inXUrg_fWIRLagOnSFkRc8HxbrRD5OitBymNntrXfWQ';
   const supabaseClient = createClient(supabaseUrl, supabaseKey);
 
-  // 🔐 Mot de passe d’accès
+  // 🔐 Mot de passe d'accès
   const CORRECT_PASSWORD = "kunbi2025";
 
+  // Fonction pour afficher les messages de statut
+  function showStatus(message, type = 'info') {
+    const statusEl = document.getElementById('statusMessage');
+    statusEl.innerHTML = `<div class="status-message status-${type}">${message}</div>`;
+    
+    // Supprimer le message après 5 secondes
+    setTimeout(() => {
+      statusEl.innerHTML = '';
+    }, 5000);
+  }
+
+  // Vérification du mot de passe
   function checkPassword() {
     const input = document.getElementById('passwordInput').value.trim();
     if (input === CORRECT_PASSWORD) {
       localStorage.setItem('kunbi_admin', 'true');
       document.getElementById('loginOverlay').style.display = 'none';
-      alert("✅ Accès autorisé. Bienvenue dans le CMS Kunbi TV !");
+      showStatus('✅ Accès autorisé. Bienvenue dans le CMS Kunbi TV !', 'success');
       loadNews();
     } else {
-      alert("❌ Mot de passe incorrect !");
+      showStatus('❌ Mot de passe incorrect !', 'error');
     }
   }
 
+  // Permettre d'appuyer sur Entrée pour se connecter
+  document.getElementById('passwordInput').addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') {
+      checkPassword();
+    }
+  });
+
+  // Vérifier si l'utilisateur est déjà connecté
   document.addEventListener('DOMContentLoaded', () => {
     if (localStorage.getItem('kunbi_admin') === 'true') {
       document.getElementById('loginOverlay').style.display = 'none';
@@ -277,72 +379,196 @@
     }
   });
 
+  // Charger les actualités
   async function loadNews() {
     const newsList = document.getElementById('newsList');
-    newsList.innerHTML = '<p>⏳ Chargement...</p>';
-    const { data, error } = await supabaseClient.from('actualites').select('*').order('created_at', { ascending: false });
-    if (error) {
-      newsList.innerHTML = '<p>Erreur de chargement.</p>';
-      return;
+    newsList.innerHTML = '<div class="loading"><i class="fas fa-spinner fa-spin"></i> Chargement des actualités...</div>';
+    
+    try {
+      const { data, error } = await supabaseClient
+        .from('actualites')
+        .select('*')
+        .order('created_at', { ascending: false });
+      
+      if (error) {
+        throw error;
+      }
+      
+      if (!data || !data.length) {
+        newsList.innerHTML = '<p style="text-align:center;padding:2rem;">Aucune actualité pour le moment.</p>';
+        return;
+      }
+      
+      newsList.innerHTML = data.map(item => `
+        <div class="news-item">
+          <div class="news-media">
+            ${item.media && (item.media.includes('.mp4') || item.media.includes('.webm') || item.media.includes('.ogg') ? 
+              `<video src="${item.media}" controls></video>` : 
+              `<img src="${item.media}" alt="${item.titre}">`)}
+          </div>
+          <div class="news-content">
+            <h3>${item.titre}</h3>
+            <p>${item.resume}</p>
+            <small>Catégorie: ${item.categorie} | ${new Date(item.created_at).toLocaleString('fr-FR')}</small>
+          </div>
+          <div class="news-actions">
+            <button class="btn-edit" onclick="editNews(${item.id})">
+              <i class="fas fa-edit"></i> Modifier
+            </button>
+            <button class="btn-delete" onclick="deleteNews(${item.id})">
+              <i class="fas fa-trash"></i> Supprimer
+            </button>
+          </div>
+        </div>
+      `).join('');
+    } catch (error) {
+      console.error('Erreur lors du chargement des actualités:', error);
+      newsList.innerHTML = '<p style="text-align:center;padding:2rem;color:#dc3545;">Erreur lors du chargement des actualités.</p>';
     }
-    if (!data.length) {
-      newsList.innerHTML = '<p>Aucune actualité pour le moment.</p>';
-      return;
-    }
-    newsList.innerHTML = data.map(item => `
-      <div class="news-item">
-        <div class="news-media">
-          ${item.media.includes('.mp4') ? `<video src="${item.media}" controls></video>` : `<img src="${item.media}" alt="${item.titre}">`}
-        </div>
-        <div class="news-content">
-          <h3>${item.titre}</h3>
-          <p>${item.resume}</p>
-          <small>${new Date(item.created_at).toLocaleString()}</small>
-        </div>
-        <div class="news-actions">
-          <button class="btn-edit" onclick="editNews(${item.id})">Modifier</button>
-          <button class="btn-delete" onclick="deleteNews(${item.id})">Supprimer</button>
-        </div>
-      </div>
-    `).join('');
   }
 
+  // Supprimer une actualité
   async function deleteNews(id) {
-    if (!confirm("Supprimer cette actualité ?")) return;
-    await supabaseClient.from('actualites').delete().eq('id', id);
-    loadNews();
+    if (!confirm("Êtes-vous sûr de vouloir supprimer cette actualité ? Cette action est irréversible.")) {
+      return;
+    }
+    
+    try {
+      const { error } = await supabaseClient
+        .from('actualites')
+        .delete()
+        .eq('id', id);
+      
+      if (error) {
+        throw error;
+      }
+      
+      showStatus('Actualité supprimée avec succès.', 'success');
+      loadNews();
+    } catch (error) {
+      console.error('Erreur lors de la suppression:', error);
+      showStatus('Erreur lors de la suppression de l\'actualité.', 'error');
+    }
   }
 
+  // Modifier une actualité
   async function editNews(id) {
-    const { data } = await supabaseClient.from('actualites').select('*').eq('id', id).single();
-    if (!data) return;
-    const newTitle = prompt("Nouveau titre :", data.titre);
-    const newResume = prompt("Nouveau résumé :", data.resume);
-    await supabaseClient.from('actualites').update({ titre: newTitle, resume: newResume }).eq('id', id);
-    loadNews();
+    try {
+      const { data, error } = await supabaseClient
+        .from('actualites')
+        .select('*')
+        .eq('id', id)
+        .single();
+      
+      if (error) {
+        throw error;
+      }
+      
+      if (!data) {
+        showStatus('Actualité non trouvée.', 'error');
+        return;
+      }
+      
+      const newTitle = prompt("Nouveau titre :", data.titre);
+      if (newTitle === null) return; // Annulation
+      
+      const newResume = prompt("Nouveau résumé :", data.resume);
+      if (newResume === null) return; // Annulation
+      
+      const newCategorie = prompt("Nouvelle catégorie :", data.categorie);
+      if (newCategorie === null) return; // Annulation
+      
+      const { error: updateError } = await supabaseClient
+        .from('actualites')
+        .update({ 
+          titre: newTitle, 
+          resume: newResume,
+          categorie: newCategorie
+        })
+        .eq('id', id);
+      
+      if (updateError) {
+        throw updateError;
+      }
+      
+      showStatus('Actualité modifiée avec succès.', 'success');
+      loadNews();
+    } catch (error) {
+      console.error('Erreur lors de la modification:', error);
+      showStatus('Erreur lors de la modification de l\'actualité.', 'error');
+    }
   }
 
+  // Gérer l'envoi du formulaire
   document.getElementById('newsForm').addEventListener('submit', async e => {
     e.preventDefault();
-    const titre = document.getElementById('titre').value;
-    const resume = document.getElementById('resume').value;
-    const lien = document.getElementById('lien').value || null;
+    
+    const titre = document.getElementById('titre').value.trim();
+    const resume = document.getElementById('resume').value.trim();
+    const lien = document.getElementById('lien').value.trim() || null;
     const categorie = document.getElementById('categorie').value;
     const file = document.getElementById('fichier').files[0];
 
-    if (!file) return alert("Veuillez sélectionner un fichier.");
+    // Validation
+    if (!titre || !resume) {
+      showStatus('Veuillez remplir tous les champs obligatoires.', 'error');
+      return;
+    }
 
-    const fileName = `${Date.now()}_${file.name}`;
-    const { error: uploadError } = await supabaseClient.storage.from('actualites').upload(fileName, file);
+    if (!file) {
+      showStatus('Veuillez sélectionner un fichier.', 'error');
+      return;
+    }
 
-    if (uploadError) return alert("Erreur d'upload.");
+    // Vérification de la taille du fichier (max 10MB)
+    if (file.size > 10 * 1024 * 1024) {
+      showStatus('Le fichier est trop volumineux. Taille maximale: 10MB.', 'error');
+      return;
+    }
 
-    const { data: urlData } = supabaseClient.storage.from('actualites').getPublicUrl(fileName);
-    const mediaUrl = urlData.publicUrl;
+    try {
+      // Upload du fichier
+      const fileName = `${Date.now()}_${file.name}`;
+      const { error: uploadError } = await supabaseClient
+        .storage
+        .from('actualites')
+        .upload(fileName, file);
 
-    await supabaseClient.from('actualites').insert([{ titre, resume, media: mediaUrl, lien, categorie }]);
-    e.target.reset();
-    loadNews();
+      if (uploadError) {
+        throw uploadError;
+      }
+
+      // Récupération de l'URL publique
+      const { data: urlData } = supabaseClient
+        .storage
+        .from('actualites')
+        .getPublicUrl(fileName);
+      
+      const mediaUrl = urlData.publicUrl;
+
+      // Insertion dans la base de données
+      const { error: insertError } = await supabaseClient
+        .from('actualites')
+        .insert([{ 
+          titre, 
+          resume, 
+          media: mediaUrl, 
+          lien, 
+          categorie 
+        }]);
+
+      if (insertError) {
+        throw insertError;
+      }
+
+      // Réinitialisation du formulaire
+      e.target.reset();
+      showStatus('Actualité publiée avec succès !', 'success');
+      loadNews();
+    } catch (error) {
+      console.error('Erreur lors de la publication:', error);
+      showStatus('Erreur lors de la publication de l\'actualité.', 'error');
+    }
   });
 </script>
 
