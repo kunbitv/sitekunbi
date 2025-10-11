@@ -160,26 +160,6 @@
       color: #dc3545;
     }
 
-    .status-message {
-      text-align: center;
-      padding: 1rem;
-      border-radius: 10px;
-      margin-bottom: 1.5rem;
-      display: none;
-    }
-
-    .status-success {
-      background: rgba(40, 167, 69, 0.2);
-      color: #28a745;
-      border: 1px solid #28a745;
-    }
-
-    .status-error {
-      background: rgba(220, 53, 69, 0.2);
-      color: #dc3545;
-      border: 1px solid #dc3545;
-    }
-
     .login-overlay {
       position: fixed;
       top: 0; left: 0;
@@ -210,12 +190,15 @@
 
 <body>
 
-<!-- 🔒 Login Overlay -->
+<!-- 🔒 Écran de connexion -->
 <div id="loginOverlay" class="login-overlay">
   <div class="login-form">
     <h2>🔒 Accès Administrateur</h2>
-    <input type="password" id="passwordInput" placeholder="Mot de passe" style="width:100%;padding:1rem;margin-bottom:1rem;">
-    <button onclick="checkPassword()" style="width:100%;">Accéder</button>
+    <p style="margin-bottom: 1.5rem; color: var(--gray);">Veuillez entrer le mot de passe pour accéder au CMS</p>
+    <input type="password" id="passwordInput" placeholder="Mot de passe">
+    <button onclick="checkPassword()" style="width:100%;">
+      <i class="fas fa-unlock"></i> Accéder
+    </button>
   </div>
 </div>
 
@@ -272,15 +255,19 @@
   const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBqZG96ZG13ZXZkZXpmemdsdGxjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjAwNzYyNDcsImV4cCI6MjA3NTY1MjI0N30.inXUrg_fWIRLagOnSFkRc8HxbrRD5OitBymNntrXfWQ';
   const supabaseClient = createClient(supabaseUrl, supabaseKey);
 
+  // 🔐 Mot de passe d’accès
   const CORRECT_PASSWORD = "kunbi2025";
 
   function checkPassword() {
-    const input = document.getElementById('passwordInput').value;
+    const input = document.getElementById('passwordInput').value.trim();
     if (input === CORRECT_PASSWORD) {
       localStorage.setItem('kunbi_admin', 'true');
       document.getElementById('loginOverlay').style.display = 'none';
+      alert("✅ Accès autorisé. Bienvenue dans le CMS Kunbi TV !");
       loadNews();
-    } else alert("Mot de passe incorrect !");
+    } else {
+      alert("❌ Mot de passe incorrect !");
+    }
   }
 
   document.addEventListener('DOMContentLoaded', () => {
@@ -357,42 +344,6 @@
     e.target.reset();
     loadNews();
   });
-  <!-- Login Protection -->
-<div id="loginOverlay" class="login-overlay">
-  <div class="login-form">
-    <h2>🔒 Accès Administrateur</h2>
-    <p style="margin-bottom: 1.5rem; color: var(--gray);">Veuillez entrer le mot de passe pour accéder au CMS</p>
-    <input type="password" id="passwordInput" placeholder="Mot de passe" style="width: 100%; margin-bottom: 1rem;">
-    <button onclick="checkPassword()" style="width: 100%;">
-      <i class="fas fa-unlock"></i> Accéder
-    </button>
-  </div>
-</div>
-
-
-  // 🔐 Mot de passe administrateur
-  const CORRECT_PASSWORD = "kunbi2025"; // <--- Tu peux changer ici si besoin
-
-  function checkPassword() {
-    const input = document.getElementById("passwordInput").value.trim();
-    if (input === CORRECT_PASSWORD) {
-      localStorage.setItem("kunbi_admin", "true");
-      document.getElementById("loginOverlay").style.display = "none";
-      alert("✅ Accès autorisé. Bienvenue dans le CMS Kunbi TV !");
-      loadNews();
-    } else {
-      alert("❌ Mot de passe incorrect !");
-    }
-  }
-
-  document.addEventListener("DOMContentLoaded", () => {
-    if (localStorage.getItem("kunbi_admin") === "true") {
-      document.getElementById("loginOverlay").style.display = "none";
-      loadNews();
-    }
-  });
-
-
 </script>
 
 </body>
