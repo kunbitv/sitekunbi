@@ -3,11 +3,23 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Kunbi TV - La voix des sans voix</title>
+  <title>Kunbi TV - La voix des sans voix, vitrine de la culture soninké</title>
+  <meta name="description" content="Kunbi TV - La voix des sans voix. Découvrez nos actualités, programmes TV et radio, émissions culturelles soninké et débats engagés.">
+  <meta name="keywords" content="Kunbi TV, Soninké, culture africaine, actualités, web TV, radio, émissions, débats, information">
+  
+  <!-- 🔒 Sécurité -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdn.jsdelivr.net https://www.youtube.com; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; media-src 'self' https://livestream.kgsols.com https://streaming.kunbiradio.com; connect-src 'self' https://pjdozdmwevdezfzgltlc.supabase.co https://api.emailjs.com">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  
+  <!-- 📈 Performance -->
+  <link rel="preconnect" href="https://cdn.jsdelivr.net">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="dns-prefetch" href="https://pjdozdmwevdezfzgltlc.supabase.co">
+  
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
   <style>
-    /* 🎨 Palette Kunbi TV */
     :root {
       --primary: #B38A1E;
       --secondary: #E0E0E0;
@@ -17,6 +29,7 @@
       --gray: #6C757D;
       --danger: #dc3545;
       --success: #28a745;
+      --warning: #ffc107;
     }
 
     * {margin:0;padding:0;box-sizing:border-box;}
@@ -101,6 +114,9 @@
       font-size:1.5rem;
       cursor:pointer;
       transition: color 0.3s ease;
+      background: none;
+      border: none;
+      color: var(--secondary);
     }
     .mobile-menu:hover {
       color: var(--primary);
@@ -215,7 +231,7 @@
         transform: translateY(0);
       }
     }
-    .hero-content h2 {
+    .hero-content h1 {
       font-size:3rem;
       color:var(--primary);
       text-shadow:0 0 25px rgba(179,138,30,.7);
@@ -423,13 +439,14 @@
       position: absolute;
       top: 1rem;
       right: 1rem;
-      background: red;
+      background: #ff3333;
       color: white;
       padding: 5px 10px;
       border-radius: 20px;
       font-size: 0.9rem;
       font-weight: bold;
       animation: blink 1s infinite;
+      border: 2px solid white;
     }
     @keyframes blink {
       0%, 50%, 100% { opacity: 1; }
@@ -442,8 +459,30 @@
       border-radius:15px;
       overflow:hidden;
       box-shadow: 0 15px 40px rgba(0,0,0,0.5);
+      position: relative;
     }
     video {width:100%;display:block;}
+    
+    /* Fallback pour flux indisponible */
+    .stream-fallback {
+      display: none;
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.8);
+      color: white;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 2rem;
+    }
+    .stream-fallback.show {
+      display: flex;
+    }
 
     /* 📻 Radio */
     .audio-container {
@@ -461,7 +500,7 @@
       margin: 0 auto;
     }
     .radio-live-badge {
-      background:red;
+      background:#ff3333;
       color:white;
       padding:5px 12px;
       border-radius:20px;
@@ -469,6 +508,7 @@
       display:inline-block;
       margin-bottom:10px;
       animation:blink 1s infinite;
+      border: 2px solid white;
     }
 
     /* 📞 Contact */
@@ -508,6 +548,25 @@
     button:hover {
       transform:translateY(-2px);
       box-shadow: 0 8px 25px rgba(179,138,30,0.3);
+    }
+
+    /* Messages de statut */
+    .status-message {
+      padding: 1rem;
+      border-radius: 12px;
+      margin: 1rem 0;
+      text-align: center;
+      font-weight: 500;
+    }
+    .status-success {
+      background: rgba(40, 167, 69, 0.2);
+      color: var(--success);
+      border: 1px solid rgba(40, 167, 69, 0.3);
+    }
+    .status-error {
+      background: rgba(220, 53, 69, 0.2);
+      color: var(--danger);
+      border: 1px solid rgba(220, 53, 69, 0.3);
     }
 
     /* Footer */
@@ -614,28 +673,9 @@
       transform: translateY(0);
     }
 
-    /* Status messages */
-    .status-message {
-      padding: 1rem;
-      border-radius: 12px;
-      margin: 1rem 0;
-      text-align: center;
-      font-weight: 500;
-    }
-    .status-success {
-      background: rgba(40, 167, 69, 0.2);
-      color: var(--success);
-      border: 1px solid rgba(40, 167, 69, 0.3);
-    }
-    .status-error {
-      background: rgba(220, 53, 69, 0.2);
-      color: var(--danger);
-      border: 1px solid rgba(220, 53, 69, 0.3);
-    }
-
     /* Responsive */
     @media (max-width: 768px) {
-      .hero-content h2 {
+      .hero-content h1 {
         font-size: 2.5rem;
       }
       .hero-content p {
@@ -674,7 +714,7 @@
     }
 
     @media (max-width: 480px) {
-      .hero-content h2 {
+      .hero-content h1 {
         font-size: 2rem;
       }
       .btn {
@@ -687,21 +727,21 @@
 <body>
 
   <!-- Admin Link -->
-  <a href="/cms.html" class="admin-link" id="adminLink">
+  <a href="/cms.html" class="admin-link" id="adminLink" aria-label="Accéder à l'interface d'administration">
     <i class="fas fa-cog"></i> Admin
   </a>
 
   <!-- Back to Top -->
-  <button id="backToTop" aria-label="Retour en haut">
+  <button id="backToTop" aria-label="Retour en haut de la page">
     <i class="fas fa-arrow-up"></i>
   </button>
 
   <!-- Header -->
   <header id="main-header">
     <div class="container header-container">
-      <img src="logo-kunbi.png" alt="Logo Kunbi TV" class="logo">
-      <div class="mobile-menu" aria-label="Menu mobile">☰</div>
-      <nav>
+      <img src="logo-kunbi.png" alt="Logo Kunbi TV - La voix des sans voix" class="logo">
+      <button class="mobile-menu" aria-label="Ouvrir le menu de navigation" aria-expanded="false">☰</button>
+      <nav aria-label="Navigation principale">
         <ul>
           <li><a href="#accueil">Accueil</a></li>
           <li><a href="#actualites">Actualités</a></li>
@@ -718,9 +758,9 @@
   <section id="accueil" class="hero">
     <div class="galaxy-background" id="galaxy"></div>
     <div class="hero-content">
-      <h2>L'expression partagée</h2>
+      <h1>L'expression partagée</h1>
       <p>Kunbi TV — la voix des sans voix, la vitrine de la culture soninké et des peuples frères à travers le monde.</p>
-      <a href="#live" class="btn"><i class="fas fa-play-circle"></i> Regarder en direct</a>
+      <a href="#live" class="btn"><i class="fas fa-play-circle" aria-hidden="true"></i> Regarder en direct</a>
     </div>
   </section>
 
@@ -745,44 +785,26 @@
         <div class="playlist-card">
           <h3>Information</h3>
           <div class="playlist-embed">
-            <iframe loading="lazy" src="https://www.youtube.com/embed/videoseries?list=PLKFO7rykPHFWk0_T5fGnwI9r7y2n1-Yed" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            <iframe loading="lazy" src="https://www.youtube.com/embed/videoseries?list=PLKFO7rykPHFWk0_T5fGnwI9r7y2n1-Yed" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen title="Playlist d'information Kunbi TV"></iframe>
           </div>
         </div>
         <div class="playlist-card">
           <h3>Kunbi Débat Express</h3>
           <div class="playlist-embed">
-            <iframe loading="lazy" src="https://www.youtube.com/embed/videoseries?list=PLKFO7rykPHFVDvHLXdxzmNT2UsIroXWCr" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            <iframe loading="lazy" src="https://www.youtube.com/embed/videoseries?list=PLKFO7rykPHFVDvHLXdxzmNT2UsIroXWCr" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen title="Playlist Kunbi Débat Express"></iframe>
           </div>
         </div>
         <div class="playlist-card">
           <h3>Soninkara Dungre (Miroir de Soninkara)</h3>
           <div class="playlist-embed">
-            <iframe loading="lazy" src="https://www.youtube.com/embed/videoseries?list=PLKFO7rykPHFXFC1Emfqi5p92EvjjVkqCz" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            <iframe loading="lazy" src="https://www.youtube.com/embed/videoseries?list=PLKFO7rykPHFXFC1Emfqi5p92EvjjVkqCz" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen title="Playlist Soninkara Dungre"></iframe>
           </div>
         </div>
         <div class="playlist-card">
           <h3>Yaxaru Ndaaxa</h3>
           <p style="color:var(--gray);font-size:0.9rem;margin-bottom:1rem;">Plateforme / abri des femmes</p>
           <div class="playlist-embed">
-            <iframe loading="lazy" src="https://www.youtube.com/embed/videoseries?list=PLKFO7rykPHFX7Yfy5gVuM3uPSFnqM16tA" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-          </div>
-        </div>
-        <div class="playlist-card">
-          <h3>Éducation</h3>
-          <div class="playlist-embed">
-            <iframe loading="lazy" src="https://www.youtube.com/embed/videoseries?list=PLKFO7rykPHFUcGx74e1GFXFYtu3GVt0sY" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-          </div>
-        </div>
-        <div class="playlist-card">
-          <h3>Culture</h3>
-          <div class="playlist-embed">
-            <iframe loading="lazy" src="https://www.youtube.com/embed/videoseries?list=PLKFO7rykPHFW7YXnaK7Hr-f3uEqXEr8Mg" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-          </div>
-        </div>
-        <div class="playlist-card">
-          <h3>Émissions Spéciales</h3>
-          <div class="playlist-embed">
-            <iframe loading="lazy" src="https://www.youtube.com/embed/videoseries?list=PLKFO7rykPHFUa2uI0Kv-G8kdH3gl57LCT" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            <iframe loading="lazy" src="https://www.youtube.com/embed/videoseries?list=PLKFO7rykPHFX7Yfy5gVuM3uPSFnqM16tA" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen title="Playlist Yaxaru Ndaaxa"></iframe>
           </div>
         </div>
       </div>
@@ -793,12 +815,20 @@
   <section id="live" class="section live-section fade-in">
     <div class="container">
       <h2>Web TV / Radio</h2>
-      <span class="live-indicator">LIVE</span>
+      <span class="live-indicator" aria-label="En direct">LIVE</span>
       <p>Regardez Kunbi TV en direct :</p>
       <div class="video-container">
-        <video id="video" controls poster="https://via.placeholder.com/800x450/333/fff?text=Kunbi+TV+En+Direct">
+        <video id="video" controls aria-label="Flux vidéo en direct de Kunbi TV" poster="https://via.placeholder.com/800x450/333/fff?text=Kunbi+TV+En+Direct">
           Votre navigateur ne supporte pas la lecture vidéo.
         </video>
+        <div class="stream-fallback" id="streamFallback">
+          <i class="fas fa-exclamation-triangle" style="font-size: 3rem; margin-bottom: 1rem;"></i>
+          <h3>Flux temporairement indisponible</h3>
+          <p>Nous rencontrons un problème technique avec notre flux en direct. Veuillez réessayer dans quelques instants.</p>
+          <button onclick="retryStream()" class="btn" style="margin-top: 1rem;">
+            <i class="fas fa-redo"></i> Réessayer
+          </button>
+        </div>
       </div>
     </div>
   </section>
@@ -807,10 +837,10 @@
   <section id="radio" class="section live-section fade-in">
     <div class="container">
       <h2>Radio Kunbi</h2>
-      <span class="radio-live-badge">LIVE</span>
+      <span class="radio-live-badge" aria-label="En direct">LIVE</span>
       <p>Écoutez Kunbi Radio en direct :</p>
       <div class="audio-container">
-        <audio id="kunbiRadio" controls>
+        <audio id="kunbiRadio" controls aria-label="Flux audio en direct de Kunbi Radio">
           <source src="https://streaming.kunbiradio.com/live.mp3" type="audio/mpeg">
           Votre navigateur ne supporte pas la lecture audio.
         </audio>
@@ -822,11 +852,14 @@
   <section id="contact" class="section fade-in">
     <div class="container">
       <h2>Contactez-nous</h2>
+      <div id="formStatus"></div>
       <form id="contact-form">
-        <input type="text" placeholder="Votre nom" required>
-        <input type="email" placeholder="Votre email" required>
-        <textarea rows="5" placeholder="Votre message" required></textarea>
-        <button type="submit">Envoyer le message</button>
+        <input type="text" placeholder="Votre nom" required aria-label="Votre nom">
+        <input type="email" placeholder="Votre email" required aria-label="Votre adresse email">
+        <textarea rows="5" placeholder="Votre message" required aria-label="Votre message"></textarea>
+        <button type="submit" aria-label="Envoyer le message">
+          <i class="fas fa-paper-plane"></i> Envoyer le message
+        </button>
       </form>
     </div>
   </section>
@@ -853,10 +886,10 @@
       </div>
       
       <div class="social-links">
-        <a href="https://facebook.com/kunbitv" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
-        <a href="https://youtube.com/@kunbitv" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
-        <a href="https://twitter.com/kunbitv" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
-        <a href="https://instagram.com/kunbitv" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+        <a href="https://facebook.com/kunbitv" aria-label="Suivez-nous sur Facebook"><i class="fab fa-facebook-f"></i></a>
+        <a href="https://youtube.com/@kunbitv" aria-label="Abonnez-vous à notre chaîne YouTube"><i class="fab fa-youtube"></i></a>
+        <a href="https://twitter.com/kunbitv" aria-label="Suivez-nous sur Twitter"><i class="fab fa-twitter"></i></a>
+        <a href="https://instagram.com/kunbitv" aria-label="Suivez-nous sur Instagram"><i class="fab fa-instagram"></i></a>
       </div>
       
       <div class="copyright">
@@ -868,34 +901,81 @@
   <!-- 🎥 HLS.js et Supabase -->
   <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
+  
   <script>
-    // 🔧 Configuration Supabase
-    const SUPABASE_URL = 'https://pjdozdmwevdezfzgltlc.supabase.co';
-    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBqZG96ZG13ZXZkZXpmemdsdGxjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjAwNzYyNDcsImV4cCI6MjA3NTY1MjI0N30.inXUrg_fWIRLagOnSFkRc8HxbrRD5OitBymNntrXfWQ';
-    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    // Configuration EmailJS (à remplacer avec vos identifiants)
+    emailjs.init("YOUR_PUBLIC_KEY"); // Remplacez par votre clé publique EmailJS
 
-    // 🌌 Animation galaxie améliorée
+    // 🔧 Configuration sécurisée
+    const CONFIG = {
+      supabase: {
+        url: 'https://pjdozdmwevdezfzgltlc.supabase.co',
+        key: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBqZG96ZG13ZXZkZXpmemdsdGxjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjAwNzYyNDcsImV4cCI6MjA3NTY1MjI0N30.inXUrg_fWIRLagOnSFkRc8HxbrRD5OitBymNntrXfWQ'
+      },
+      streams: {
+        tv: 'https://livestream.kgsols.com/push/Kunbitv/playlist.m3u8',
+        tvFallback: 'https://backup.kgsols.com/push/Kunbitv/playlist.m3u8',
+        radio: 'https://streaming.kunbiradio.com/live.mp3'
+      }
+    };
+
+    // Cache pour les données
+    const cache = {
+      get: (key) => {
+        try {
+          const item = localStorage.getItem(`kunbi_${key}`);
+          if (item) {
+            const { data, expiry } = JSON.parse(item);
+            if (Date.now() < expiry) return data;
+          }
+        } catch (e) {
+          console.warn('Erreur cache:', e);
+        }
+        return null;
+      },
+      set: (key, data, ttl = 300000) => {
+        try {
+          const item = {
+            data,
+            expiry: Date.now() + ttl
+          };
+          localStorage.setItem(`kunbi_${key}`, JSON.stringify(item));
+        } catch (e) {
+          console.warn('Erreur mise en cache:', e);
+        }
+      }
+    };
+
+    // 🌌 Animation galaxie optimisée avec requestAnimationFrame
     function createGalaxy() {
       const galaxy = document.getElementById('galaxy');
-      for (let i = 0; i < 250; i++) {
+      const starCount = window.innerWidth < 768 ? 80 : 150; // Réduction sur mobile
+      
+      for (let i = 0; i < starCount; i++) {
         const star = document.createElement('div');
-        const size = Math.random() * 3;
-        const starType = size < 1 ? 'small' : size < 2 ? 'medium' : 'large';
+        const size = Math.random() * 2;
+        const starType = size < 0.7 ? 'small' : size < 1.4 ? 'medium' : 'large';
         star.className = `star ${starType}`;
         star.style.left = `${Math.random() * 100}%`;
         star.style.top = `${Math.random() * 100}%`;
-        star.style.animationDuration = `${2 + Math.random() * 4}s`;
-        star.style.animationDelay = `${Math.random() * 5}s`;
+        star.style.animationDuration = `${2 + Math.random() * 3}s`;
+        star.style.animationDelay = `${Math.random() * 4}s`;
         galaxy.appendChild(star);
       }
 
-      // Étoiles filantes en continu
+      // Étoiles filantes optimisées
+      let lastShootingStarTime = 0;
+      
       function createShootingStar() {
+        const now = Date.now();
+        if (now - lastShootingStarTime < 3000) return; // Limite à une toutes les 3s
+        
+        lastShootingStarTime = now;
         const shootingStar = document.createElement('div');
         shootingStar.className = 'shooting-star';
         shootingStar.style.left = `${Math.random() * 20}%`;
         shootingStar.style.top = `${Math.random() * 20}%`;
-        shootingStar.style.animationDelay = `${Math.random() * 2}s`;
         galaxy.appendChild(shootingStar);
         
         setTimeout(() => {
@@ -905,30 +985,89 @@
         }, 6000);
       }
 
-      setInterval(createShootingStar, 3000);
-      for (let i = 0; i < 3; i++) {
-        setTimeout(createShootingStar, i * 1000);
+      // Utilisation de requestAnimationFrame pour de meilleures performances
+      function animateShootingStars() {
+        if (Math.random() < 0.02) { // 2% de chance à chaque frame
+          createShootingStar();
+        }
+        requestAnimationFrame(animateShootingStars);
+      }
+      
+      animateShootingStars();
+    }
+
+    // 📺 Lecture live TV avec fallback
+    const video = document.getElementById('video');
+    const streamFallback = document.getElementById('streamFallback');
+    let currentStreamIndex = 0;
+    const streams = [CONFIG.streams.tv, CONFIG.streams.tvFallback];
+
+    function initializeVideoPlayer(streamUrl) {
+      if (Hls.isSupported()) {
+        const hls = new Hls({
+          enableWorker: false, // Désactive le worker pour meilleure compatibilité
+          lowLatencyMode: true,
+          backBufferLength: 90
+        });
+        
+        hls.loadSource(streamUrl);
+        hls.attachMedia(video);
+        
+        hls.on(Hls.Events.MANIFEST_PARSED, function() {
+          console.log('Flux vidéo chargé avec succès');
+          streamFallback.classList.remove('show');
+          video.style.display = 'block';
+        });
+        
+        hls.on(Hls.Events.ERROR, function(event, data) {
+          console.error('Erreur HLS:', data);
+          if (data.fatal) {
+            switch(data.type) {
+              case Hls.ErrorTypes.NETWORK_ERROR:
+                tryNextStream();
+                break;
+              case Hls.ErrorTypes.MEDIA_ERROR:
+                hls.recoverMediaError();
+                break;
+              default:
+                showStreamFallback();
+                break;
+            }
+          }
+        });
+        
+      } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+        video.src = streamUrl;
+        video.addEventListener('loadeddata', () => {
+          streamFallback.classList.remove('show');
+          video.style.display = 'block';
+        });
+        video.addEventListener('error', tryNextStream);
+      } else {
+        showStreamFallback();
       }
     }
 
-    // 📺 Lecture live TV
-    const video = document.getElementById('video');
-    const videoSrc = 'https://livestream.kgsols.com/push/Kunbitv/playlist.m3u8';
-    
-    function initializeVideoPlayer() {
-      if (Hls.isSupported()) {
-        const hls = new Hls();
-        hls.loadSource(videoSrc);
-        hls.attachMedia(video);
-        hls.on(Hls.Events.MANIFEST_PARSED, function() {
-          console.log('Lecteur vidéo initialisé avec succès');
-        });
-      } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
-        video.src = videoSrc;
+    function tryNextStream() {
+      currentStreamIndex++;
+      if (currentStreamIndex < streams.length) {
+        console.log('Tentative avec flux de secours...');
+        initializeVideoPlayer(streams[currentStreamIndex]);
       } else {
-        console.error('HLS non supporté par ce navigateur');
-        video.innerHTML = '<p>Votre navigateur ne supporte pas la lecture de flux en direct. Veuillez utiliser un navigateur moderne.</p>';
+        showStreamFallback();
       }
+    }
+
+    function showStreamFallback() {
+      streamFallback.classList.add('show');
+      video.style.display = 'none';
+    }
+
+    function retryStream() {
+      currentStreamIndex = 0;
+      streamFallback.classList.remove('show');
+      video.style.display = 'block';
+      initializeVideoPlayer(streams[0]);
     }
 
     // 📱 Menu mobile amélioré
@@ -936,8 +1075,9 @@
     const navUl = document.querySelector('nav ul');
     
     mobileMenu.addEventListener('click', () => {
-      navUl.classList.toggle('show');
-      mobileMenu.textContent = navUl.classList.contains('show') ? '✕' : '☰';
+      const isExpanded = navUl.classList.toggle('show');
+      mobileMenu.textContent = isExpanded ? '✕' : '☰';
+      mobileMenu.setAttribute('aria-expanded', isExpanded);
     });
 
     // Fermer le menu en cliquant sur un lien
@@ -945,12 +1085,20 @@
       link.addEventListener('click', () => {
         navUl.classList.remove('show');
         mobileMenu.textContent = '☰';
+        mobileMenu.setAttribute('aria-expanded', 'false');
       });
     });
 
-    // ✉️ Formulaire contact amélioré
-    document.getElementById('contact-form').addEventListener('submit', e => {
+    // ✉️ Formulaire contact avec EmailJS
+    document.getElementById('contact-form').addEventListener('submit', async e => {
       e.preventDefault();
+      
+      const formData = new FormData(e.target);
+      const data = {
+        nom: formData.get('nom') || document.querySelector('input[type="text"]').value,
+        email: formData.get('email') || document.querySelector('input[type="email"]').value,
+        message: formData.get('message') || document.querySelector('textarea').value
+      };
       
       const submitButton = e.target.querySelector('button[type="submit"]');
       const originalText = submitButton.innerHTML;
@@ -958,18 +1106,51 @@
       submitButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Envoi en cours...';
       submitButton.disabled = true;
       
-      setTimeout(() => {
-        alert('Merci pour votre message ! Nous vous répondrons dans les plus brefs délais.');
-        e.target.reset();
+      const statusEl = document.getElementById('formStatus');
+      
+      try {
+        // Envoi via EmailJS
+        const response = await emailjs.send('YOUR_SERVICE_ID', 'YOUR_TEMPLATE_ID', {
+          from_name: data.nom,
+          from_email: data.email,
+          message: data.message
+        });
+
+        if (response.status === 200) {
+          statusEl.innerHTML = `<div class="status-message status-success">
+            <i class="fas fa-check-circle"></i> Message envoyé avec succès ! Nous vous répondrons dans les plus brefs délais.
+          </div>`;
+          e.target.reset();
+        } else {
+          throw new Error('Erreur lors de l\'envoi');
+        }
+      } catch (error) {
+        console.error('Erreur envoi email:', error);
+        statusEl.innerHTML = `<div class="status-message status-error">
+          <i class="fas fa-exclamation-triangle"></i> Erreur lors de l'envoi du message. Veuillez réessayer ou nous contacter directement à contact@kunbitv.com
+        </div>`;
+      } finally {
         submitButton.innerHTML = originalText;
         submitButton.disabled = false;
-      }, 2000);
+        
+        // Supprimer le message après 5 secondes
+        setTimeout(() => {
+          statusEl.innerHTML = '';
+        }, 5000);
+      }
     });
 
-    // 📰 Chargement des actualités depuis Supabase
+    // 📰 Chargement des actualités depuis Supabase avec cache
     async function loadActualites() {
       const container = document.getElementById('newsGrid');
       
+      // Vérifier le cache d'abord
+      const cachedNews = cache.get('news');
+      if (cachedNews) {
+        renderNews(cachedNews, container);
+        return;
+      }
+
       try {
         const { data, error } = await supabase
           .from('actualites')
@@ -990,40 +1171,9 @@
           return;
         }
 
-        container.innerHTML = data.map(item => {
-          const isVideo = item.media && (
-            item.media.includes('.mp4') || 
-            item.media.includes('.mov') || 
-            item.media.includes('.webm')
-          );
-          
-          const mediaElement = isVideo 
-            ? `<video muted loop playsinline><source src="${item.media}" type="video/mp4"></video>`
-            : `<img loading="lazy" src="${item.media || 'https://via.placeholder.com/400x200/333/fff?text=Kunbi+TV'}" alt="${item.titre}">`;
-          
-          const date = new Date(item.created_at).toLocaleDateString('fr-FR', {
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric'
-          });
-
-          return `
-            <div class="news-card fade-in">
-              ${mediaElement}
-              <div class="news-card-content">
-                <h3>${item.titre}</h3>
-                <p>${item.resume}</p>
-                ${item.lien ? `<a href="${item.lien}" target="_blank">Lire plus</a>` : ''}
-                <div class="news-date">${date}</div>
-              </div>
-            </div>
-          `;
-        }).join('');
-
-        // Observer les nouvelles cartes pour l'animation
-        document.querySelectorAll('#newsGrid .fade-in').forEach(card => {
-          appearOnScroll.observe(card);
-        });
+        // Mettre en cache pour 5 minutes
+        cache.set('news', data, 300000);
+        renderNews(data, container);
 
       } catch (error) {
         console.error('Erreur lors du chargement des actualités:', error);
@@ -1035,6 +1185,43 @@
           </div>
         `;
       }
+    }
+
+    function renderNews(data, container) {
+      container.innerHTML = data.map(item => {
+        const isVideo = item.media && (
+          item.media.includes('.mp4') || 
+          item.media.includes('.mov') || 
+          item.media.includes('.webm')
+        );
+        
+        const mediaElement = isVideo 
+          ? `<video muted loop playsinline aria-label="Vidéo: ${item.titre}"><source src="${item.media}" type="video/mp4"></video>`
+          : `<img loading="lazy" src="${item.media || 'https://via.placeholder.com/400x200/333/fff?text=Kunbi+TV'}" alt="Image illustrant l'actualité: ${item.titre}">`;
+        
+        const date = new Date(item.created_at).toLocaleDateString('fr-FR', {
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric'
+        });
+
+        return `
+          <article class="news-card fade-in">
+            ${mediaElement}
+            <div class="news-card-content">
+              <h3>${item.titre}</h3>
+              <p>${item.resume}</p>
+              ${item.lien ? `<a href="${item.lien}" target="_blank" rel="noopener" aria-label="Lire la suite de l'actualité: ${item.titre}">Lire plus</a>` : ''}
+              <div class="news-date" aria-label="Publié le ${date}">${date}</div>
+            </div>
+          </article>
+        `;
+      }).join('');
+
+      // Observer les nouvelles cartes pour l'animation
+      document.querySelectorAll('#newsGrid .fade-in').forEach(card => {
+        appearOnScroll.observe(card);
+      });
     }
 
     // 🎯 Header au scroll
@@ -1056,7 +1243,7 @@
     // ✨ Animation fade-in au scroll
     const faders = document.querySelectorAll('.fade-in');
     const appearOptions = {
-      threshold: 0.2,
+      threshold: 0.1,
       rootMargin: "0px 0px -50px 0px"
     };
 
@@ -1080,8 +1267,11 @@
     // 🚀 Initialisation
     document.addEventListener('DOMContentLoaded', function() {
       createGalaxy();
-      initializeVideoPlayer();
+      initializeVideoPlayer(streams[0]);
       loadActualites();
+      
+      // Initialiser Supabase
+      window.supabase = window.supabase.createClient(CONFIG.supabase.url, CONFIG.supabase.key);
     });
   </script>
 </body>
