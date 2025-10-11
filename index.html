@@ -747,6 +747,49 @@
       </div>
     </div>
   </section>
+<!-- 📻 Radio -->
+<section id="radio" class="section live-section fade-in">
+  <div class="container">
+    <h2>Radio Kunbi</h2>
+    <p>Écoutez Kunbi Radio en direct :</p>
+    <div class="audio-container" style="max-width:900px; margin:2rem auto; text-align:center;">
+      <audio id="kunbiRadio" controls>
+        <source src="https://streaming.kunbiradio.com/live.mp3" type="audio/mpeg">
+        Votre navigateur ne supporte pas la lecture audio.
+      </audio>
+    </div>
+  </div>
+</section>
+
+<script>
+  const radio = document.getElementById('kunbiRadio');
+  const radioSection = document.getElementById('radio');
+
+  // Création du badge LIVE
+  const liveBadge = document.createElement('div');
+  liveBadge.textContent = 'LIVE';
+  liveBadge.style.cssText = `
+    background:red;
+    color:white;
+    padding:5px 12px;
+    border-radius:20px;
+    font-weight:bold;
+    display:inline-block;
+    margin-bottom:10px;
+    animation:blink 1s infinite;
+  `;
+  radioSection.querySelector('h2').before(liveBadge);
+
+  // Animation clignotante
+  const style = document.createElement('style');
+  style.textContent = `
+    @keyframes blink {
+      0%, 50%, 100% {opacity:1;}
+      25%, 75% {opacity:0;}
+    }
+  `;
+  document.head.appendChild(style);
+</script>
 
   <!-- 📞 Contact -->
   <section id="contact" class="section fade-in">
@@ -804,42 +847,69 @@
     const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBqZG96ZG13ZXZkZXpmemdsdGxjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjAwNzYyNDcsImV4cCI6MjA3NTY1MjI0N30.inXUrg_fWIRLagOnSFkRc8HxbrRD5OitBymNntrXfWQ';
     const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-    // 🌌 Animation galaxie améliorée
-    function createGalaxy() {
-      const galaxy = document.getElementById('galaxy');
-      for (let i = 0; i < 250; i++) {
-        const star = document.createElement('div');
-        const size = Math.random() * 3;
-        const starType = size < 1 ? 'small' : size < 2 ? 'medium' : 'large';
-        star.className = `star ${starType}`;
-        star.style.left = `${Math.random() * 100}%`;
-        star.style.top = `${Math.random() * 100}%`;
-        star.style.animationDuration = `${2 + Math.random() * 4}s`;
-        star.style.animationDelay = `${Math.random() * 5}s`;
-        galaxy.appendChild(star);
-      }
+ // 🌌 Galaxy optimisée
+function createGalaxyOptimized() {
+  const galaxy = document.getElementById('galaxy');
+  const stars = [];
+  const shootingStars = [];
 
-      // Étoiles filantes en continu
-      function createShootingStar() {
-        const shootingStar = document.createElement('div');
-        shootingStar.className = 'shooting-star';
-        shootingStar.style.left = `${Math.random() * 20}%`;
-        shootingStar.style.top = `${Math.random() * 20}%`;
-        shootingStar.style.animationDelay = `${Math.random() * 2}s`;
-        galaxy.appendChild(shootingStar);
-        
-        setTimeout(() => {
-          if (shootingStar.parentNode) {
-            galaxy.removeChild(shootingStar);
-          }
-        }, 6000);
-      }
+  // Création des étoiles fixes
+  const STAR_COUNT = 120;
+  for (let i = 0; i < STAR_COUNT; i++) {
+    const star = document.createElement('div');
+    const size = Math.random() * 2 + 1; // 1 à 3 px
+    const starType = size < 1.5 ? 'small' : size < 2.5 ? 'medium' : 'large';
+    star.className = `star ${starType}`;
+    star.style.left = `${Math.random() * 100}%`;
+    star.style.top = `${Math.random() * 100}%`;
+    star.style.width = `${size}px`;
+    star.style.height = `${size}px`;
+    star.style.animationDuration = `${2 + Math.random() * 4}s`;
+    star.style.animationDelay = `${Math.random() * 5}s`;
+    galaxy.appendChild(star);
+    stars.push(star);
+  }
 
-      setInterval(createShootingStar, 3000);
-      for (let i = 0; i < 3; i++) {
-        setTimeout(createShootingStar, i * 1000);
+  // Création d'un pool d'étoiles filantes
+  const SHOOTING_STAR_COUNT = 3;
+  for (let i = 0; i < SHOOTING_STAR_COUNT; i++) {
+    const shootingStar = document.createElement('div');
+    shootingStar.className = 'shooting-star';
+    resetShootingStar(shootingStar);
+    galaxy.appendChild(shootingStar);
+    shootingStars.push(shootingStar);
+  }
+
+  function resetShootingStar(star) {
+    star.style.left = `${Math.random() * 20}%`;
+    star.style.top = `${Math.random() * 20}%`;
+    star.dataset.progress = 0; // position animée
+  }
+
+  function animateShootingStars() {
+    shootingStars.forEach(star => {
+      let progress = parseFloat(star.dataset.progress);
+      if (progress >= 1) {
+        resetShootingStar(star);
+        progress = 0;
+      } else {
+        progress += 0.01 + Math.random() * 0.01; // vitesse variable
       }
-    }
+      star.dataset.progress = progress;
+      star.style.transform = `translate(${progress * 100}vw, ${progress * 100}vh) rotate(45deg)`;
+      star.style.opacity = `${1 - progress}`;
+      star.style.width = `${3 + progress * 50}px`;
+    });
+    requestAnimationFrame(animateShootingStars);
+  }
+
+  animateShootingStars();
+}
+
+// 🚀 Appel au DOMContentLoaded
+document.addEventListener('DOMContentLoaded', () => {
+  createGalaxyOptimized();
+});
 
     // 📺 Lecture live TV
     const video = document.getElementById('video');
@@ -1016,3 +1086,4 @@
   </script>
 </body>
 </html>
+
