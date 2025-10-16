@@ -1120,6 +1120,7 @@
     backToTop.addEventListener('click', () => {
       window.scrollTo({ top: 0, behavior: 'smooth' });
     });
+    
 
     // ✨ Animation fade-in au scroll
     const faders = document.querySelectorAll('.fade-in');
@@ -1138,6 +1139,17 @@
     }, appearOptions);
 
     faders.forEach(fader => appearOnScroll.observe(fader));
+    const appearOnScroll = new IntersectionObserver((entries, observer) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+      observer.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.2 });
+
+document.querySelectorAll('.fade-in').forEach(el => appearOnScroll.observe(el));
+
 
     // 🔗 Lien Admin conditionnel
     const adminLink = document.getElementById('adminLink');
@@ -1165,6 +1177,17 @@
         observer.observe(iframe);
       });
     }
+    document.querySelectorAll('iframe[data-src]').forEach(iframe => {
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        iframe.src = iframe.dataset.src;
+        observer.unobserve(iframe);
+      }
+    });
+  });
+  observer.observe(iframe);
+});
 
     // 🚀 Initialisation
     document.addEventListener('DOMContentLoaded', function() {
@@ -1176,3 +1199,4 @@
   </script>
 </body>
 </html>
+
