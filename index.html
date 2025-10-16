@@ -9,12 +9,17 @@
   
   <!-- 🔒 Sécurité -->
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdn.jsdelivr.net https://www.youtube.com; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; media-src 'self' https://livestream.kgsols.com https://streaming.kunbiradio.com; connect-src 'self' https://pjdozdmwevdezfzgltlc.supabase.co https://api.emailjs.com">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  
+  <!-- 📈 Performance -->
+  <link rel="preconnect" href="https://cdn.jsdelivr.net">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="dns-prefetch" href="https://pjdozdmwevdezfzgltlc.supabase.co">
   
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
   <style>
-    /* 🎨 VOTRE STYLE COMPLET EST ICI */
     :root {
       --primary: #B38A1E;
       --secondary: #E0E0E0;
@@ -22,6 +27,9 @@
       --light: #FFF;
       --dark: #111;
       --gray: #6C757D;
+      --danger: #dc3545;
+      --success: #28a745;
+      --warning: #ffc107;
     }
 
     * {margin:0;padding:0;box-sizing:border-box;}
@@ -552,12 +560,12 @@
     }
     .status-success {
       background: rgba(40, 167, 69, 0.2);
-      color: #28a745;
+      color: var(--success);
       border: 1px solid rgba(40, 167, 69, 0.3);
     }
     .status-error {
       background: rgba(220, 53, 69, 0.2);
-      color: #dc3545;
+      color: var(--danger);
       border: 1px solid rgba(220, 53, 69, 0.3);
     }
 
@@ -769,7 +777,7 @@
     </div>
   </section>
 
-  <!-- 🎬 Nos Programmes - TOUS VOS PROGRAMMES SONT LÀ -->
+  <!-- 🎬 Nos Programmes -->
   <section id="programmes" class="section fade-in">
     <div class="container">
       <h2>Nos Programmes</h2>
@@ -797,25 +805,6 @@
           <p style="color:var(--gray);font-size:0.9rem;margin-bottom:1rem;">Plateforme / abri des femmes</p>
           <div class="playlist-embed">
             <iframe loading="lazy" src="https://www.youtube.com/embed/videoseries?list=PLKFO7rykPHFX7Yfy5gVuM3uPSFnqM16tA" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen title="Playlist Yaxaru Ndaaxa"></iframe>
-          </div>
-        </div>
-        <!-- PROGRAMMES AJOUTÉS -->
-        <div class="playlist-card">
-          <h3>Éducation</h3>
-          <div class="playlist-embed">
-            <iframe loading="lazy" src="https://www.youtube.com/embed/videoseries?list=PLKFO7rykPHFUcGx74e1GFXFYtu3GVt0sY" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen title="Playlist Éducation Kunbi TV"></iframe>
-          </div>
-        </div>
-        <div class="playlist-card">
-          <h3>Culture</h3>
-          <div class="playlist-embed">
-            <iframe loading="lazy" src="https://www.youtube.com/embed/videoseries?list=PLKFO7rykPHFW7YXnaK7Hr-f3uEqXEr8Mg" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen title="Playlist Culture Kunbi TV"></iframe>
-          </div>
-        </div>
-        <div class="playlist-card">
-          <h3>Émissions Spéciales</h3>
-          <div class="playlist-embed">
-            <iframe loading="lazy" src="https://www.youtube.com/embed/videoseries?list=PLKFO7rykPHFUa2uI0Kv-G8kdH3gl57LCT" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen title="Playlist Émissions Spéciales Kunbi TV"></iframe>
           </div>
         </div>
       </div>
@@ -865,9 +854,9 @@
       <h2>Contactez-nous</h2>
       <div id="formStatus"></div>
       <form id="contact-form">
-        <input type="text" name="nom" placeholder="Votre nom" required aria-label="Votre nom">
-        <input type="email" name="email" placeholder="Votre email" required aria-label="Votre adresse email">
-        <textarea name="message" rows="5" placeholder="Votre message" required aria-label="Votre message"></textarea>
+        <input type="text" placeholder="Votre nom" required aria-label="Votre nom">
+        <input type="email" placeholder="Votre email" required aria-label="Votre adresse email">
+        <textarea rows="5" placeholder="Votre message" required aria-label="Votre message"></textarea>
         <button type="submit" aria-label="Envoyer le message">
           <i class="fas fa-paper-plane"></i> Envoyer le message
         </button>
@@ -875,7 +864,7 @@
     </div>
   </section>
 
-  <!-- Footer COMPLET -->
+  <!-- Footer -->
   <footer>
     <div class="container">
       <div class="footer-content">
@@ -887,14 +876,12 @@
           <h3>Contact</h3>
           <p>Email: contact@kunbitv.com</p>
           <p>Téléphone: +33 1 23 45 67 89</p>
-          <p>Adresse: Paris, France</p>
         </div>
         <div class="footer-column">
           <h3>Liens rapides</h3>
           <p><a href="#accueil" style="color:var(--secondary);text-decoration:none;">Accueil</a></p>
           <p><a href="#programmes" style="color:var(--secondary);text-decoration:none;">Programmes</a></p>
           <p><a href="#live" style="color:var(--secondary);text-decoration:none;">Web TV</a></p>
-          <p><a href="#radio" style="color:var(--secondary);text-decoration:none;">Radio</a></p>
         </div>
       </div>
       
@@ -903,24 +890,24 @@
         <a href="https://youtube.com/@kunbitv" aria-label="Abonnez-vous à notre chaîne YouTube"><i class="fab fa-youtube"></i></a>
         <a href="https://twitter.com/kunbitv" aria-label="Suivez-nous sur Twitter"><i class="fab fa-twitter"></i></a>
         <a href="https://instagram.com/kunbitv" aria-label="Suivez-nous sur Instagram"><i class="fab fa-instagram"></i></a>
-        <a href="https://tiktok.com/@kunbitv" aria-label="Suivez-nous sur TikTok"><i class="fab fa-tiktok"></i></a>
       </div>
       
       <div class="copyright">
-        © 2025 Kunbi TV — Tous droits réservés | <a href="/cms.html" style="color:#aaa;text-decoration:none;">Espace Admin</a>
+        © 2025 Kunbi TV — Tous droits réservés
       </div>
     </div>
   </footer>
 
-  <!-- Scripts -->
+  <!-- 🎥 HLS.js et Supabase -->
   <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
   
   <script>
-    // Configuration EmailJS (à remplacer)
-    emailjs.init("YOUR_PUBLIC_KEY");
+    // Configuration EmailJS (à remplacer avec vos identifiants)
+    emailjs.init("YOUR_PUBLIC_KEY"); // Remplacez par votre clé publique EmailJS
 
+    // 🔧 Configuration sécurisée
     const CONFIG = {
       supabase: {
         url: 'https://pjdozdmwevdezfzgltlc.supabase.co',
@@ -933,10 +920,37 @@
       }
     };
 
-    // 🌌 Animation galaxie optimisée
+    // Cache pour les données
+    const cache = {
+      get: (key) => {
+        try {
+          const item = localStorage.getItem(`kunbi_${key}`);
+          if (item) {
+            const { data, expiry } = JSON.parse(item);
+            if (Date.now() < expiry) return data;
+          }
+        } catch (e) {
+          console.warn('Erreur cache:', e);
+        }
+        return null;
+      },
+      set: (key, data, ttl = 300000) => {
+        try {
+          const item = {
+            data,
+            expiry: Date.now() + ttl
+          };
+          localStorage.setItem(`kunbi_${key}`, JSON.stringify(item));
+        } catch (e) {
+          console.warn('Erreur mise en cache:', e);
+        }
+      }
+    };
+
+    // 🌌 Animation galaxie optimisée avec requestAnimationFrame
     function createGalaxy() {
       const galaxy = document.getElementById('galaxy');
-      const starCount = window.innerWidth < 768 ? 80 : 150;
+      const starCount = window.innerWidth < 768 ? 80 : 150; // Réduction sur mobile
       
       for (let i = 0; i < starCount; i++) {
         const star = document.createElement('div');
@@ -950,11 +964,12 @@
         galaxy.appendChild(star);
       }
 
+      // Étoiles filantes optimisées
       let lastShootingStarTime = 0;
       
       function createShootingStar() {
         const now = Date.now();
-        if (now - lastShootingStarTime < 3000) return;
+        if (now - lastShootingStarTime < 3000) return; // Limite à une toutes les 3s
         
         lastShootingStarTime = now;
         const shootingStar = document.createElement('div');
@@ -970,8 +985,9 @@
         }, 6000);
       }
 
+      // Utilisation de requestAnimationFrame pour de meilleures performances
       function animateShootingStars() {
-        if (Math.random() < 0.02) {
+        if (Math.random() < 0.02) { // 2% de chance à chaque frame
           createShootingStar();
         }
         requestAnimationFrame(animateShootingStars);
@@ -989,7 +1005,7 @@
     function initializeVideoPlayer(streamUrl) {
       if (Hls.isSupported()) {
         const hls = new Hls({
-          enableWorker: false,
+          enableWorker: false, // Désactive le worker pour meilleure compatibilité
           lowLatencyMode: true,
           backBufferLength: 90
         });
@@ -1054,7 +1070,7 @@
       initializeVideoPlayer(streams[0]);
     }
 
-    // 📱 Menu mobile
+    // 📱 Menu mobile amélioré
     const mobileMenu = document.querySelector('.mobile-menu');
     const navUl = document.querySelector('nav ul');
     
@@ -1064,6 +1080,7 @@
       mobileMenu.setAttribute('aria-expanded', isExpanded);
     });
 
+    // Fermer le menu en cliquant sur un lien
     document.querySelectorAll('nav ul li a').forEach(link => {
       link.addEventListener('click', () => {
         navUl.classList.remove('show');
@@ -1072,15 +1089,15 @@
       });
     });
 
-    // ✉️ Formulaire contact
+    // ✉️ Formulaire contact avec EmailJS
     document.getElementById('contact-form').addEventListener('submit', async e => {
       e.preventDefault();
       
       const formData = new FormData(e.target);
       const data = {
-        nom: formData.get('nom'),
-        email: formData.get('email'),
-        message: formData.get('message')
+        nom: formData.get('nom') || document.querySelector('input[type="text"]').value,
+        email: formData.get('email') || document.querySelector('input[type="email"]').value,
+        message: formData.get('message') || document.querySelector('textarea').value
       };
       
       const submitButton = e.target.querySelector('button[type="submit"]');
@@ -1092,32 +1109,48 @@
       const statusEl = document.getElementById('formStatus');
       
       try {
-        // Simulation d'envoi - Remplacez par votre service
-        await new Promise(resolve => setTimeout(resolve, 2000));
-        
-        statusEl.innerHTML = `<div class="status-message status-success">
-          <i class="fas fa-check-circle"></i> Message envoyé avec succès ! Nous vous répondrons dans les plus brefs délais.
-        </div>`;
-        e.target.reset();
-        
+        // Envoi via EmailJS
+        const response = await emailjs.send('YOUR_SERVICE_ID', 'YOUR_TEMPLATE_ID', {
+          from_name: data.nom,
+          from_email: data.email,
+          message: data.message
+        });
+
+        if (response.status === 200) {
+          statusEl.innerHTML = `<div class="status-message status-success">
+            <i class="fas fa-check-circle"></i> Message envoyé avec succès ! Nous vous répondrons dans les plus brefs délais.
+          </div>`;
+          e.target.reset();
+        } else {
+          throw new Error('Erreur lors de l\'envoi');
+        }
       } catch (error) {
+        console.error('Erreur envoi email:', error);
         statusEl.innerHTML = `<div class="status-message status-error">
-          <i class="fas fa-exclamation-triangle"></i> Erreur lors de l'envoi. Veuillez réessayer.
+          <i class="fas fa-exclamation-triangle"></i> Erreur lors de l'envoi du message. Veuillez réessayer ou nous contacter directement à contact@kunbitv.com
         </div>`;
       } finally {
         submitButton.innerHTML = originalText;
         submitButton.disabled = false;
         
+        // Supprimer le message après 5 secondes
         setTimeout(() => {
           statusEl.innerHTML = '';
         }, 5000);
       }
     });
 
-    // 📰 Chargement des actualités
+    // 📰 Chargement des actualités depuis Supabase avec cache
     async function loadActualites() {
       const container = document.getElementById('newsGrid');
       
+      // Vérifier le cache d'abord
+      const cachedNews = cache.get('news');
+      if (cachedNews) {
+        renderNews(cachedNews, container);
+        return;
+      }
+
       try {
         const { data, error } = await supabase
           .from('actualites')
@@ -1138,39 +1171,9 @@
           return;
         }
 
-        container.innerHTML = data.map(item => {
-          const isVideo = item.media && (
-            item.media.includes('.mp4') || 
-            item.media.includes('.mov') || 
-            item.media.includes('.webm')
-          );
-          
-          const mediaElement = isVideo 
-            ? `<video muted loop playsinline aria-label="Vidéo: ${item.titre}"><source src="${item.media}" type="video/mp4"></video>`
-            : `<img loading="lazy" src="${item.media || 'https://via.placeholder.com/400x200/333/fff?text=Kunbi+TV'}" alt="Image illustrant l'actualité: ${item.titre}">`;
-          
-          const date = new Date(item.created_at).toLocaleDateString('fr-FR', {
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric'
-          });
-
-          return `
-            <article class="news-card fade-in">
-              ${mediaElement}
-              <div class="news-card-content">
-                <h3>${item.titre}</h3>
-                <p>${item.resume}</p>
-                ${item.lien ? `<a href="${item.lien}" target="_blank" rel="noopener" aria-label="Lire la suite de l'actualité: ${item.titre}">Lire plus</a>` : ''}
-                <div class="news-date" aria-label="Publié le ${date}">${date}</div>
-              </div>
-            </article>
-          `;
-        }).join('');
-
-        document.querySelectorAll('#newsGrid .fade-in').forEach(card => {
-          appearOnScroll.observe(card);
-        });
+        // Mettre en cache pour 5 minutes
+        cache.set('news', data, 300000);
+        renderNews(data, container);
 
       } catch (error) {
         console.error('Erreur lors du chargement des actualités:', error);
@@ -1182,6 +1185,43 @@
           </div>
         `;
       }
+    }
+
+    function renderNews(data, container) {
+      container.innerHTML = data.map(item => {
+        const isVideo = item.media && (
+          item.media.includes('.mp4') || 
+          item.media.includes('.mov') || 
+          item.media.includes('.webm')
+        );
+        
+        const mediaElement = isVideo 
+          ? `<video muted loop playsinline aria-label="Vidéo: ${item.titre}"><source src="${item.media}" type="video/mp4"></video>`
+          : `<img loading="lazy" src="${item.media || 'https://via.placeholder.com/400x200/333/fff?text=Kunbi+TV'}" alt="Image illustrant l'actualité: ${item.titre}">`;
+        
+        const date = new Date(item.created_at).toLocaleDateString('fr-FR', {
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric'
+        });
+
+        return `
+          <article class="news-card fade-in">
+            ${mediaElement}
+            <div class="news-card-content">
+              <h3>${item.titre}</h3>
+              <p>${item.resume}</p>
+              ${item.lien ? `<a href="${item.lien}" target="_blank" rel="noopener" aria-label="Lire la suite de l'actualité: ${item.titre}">Lire plus</a>` : ''}
+              <div class="news-date" aria-label="Publié le ${date}">${date}</div>
+            </div>
+          </article>
+        `;
+      }).join('');
+
+      // Observer les nouvelles cartes pour l'animation
+      document.querySelectorAll('#newsGrid .fade-in').forEach(card => {
+        appearOnScroll.observe(card);
+      });
     }
 
     // 🎯 Header au scroll
